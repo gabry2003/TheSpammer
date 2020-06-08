@@ -39,10 +39,5 @@
 		"https://fonts.googleapis.com/*",
 		"tabs"
 	],
-	"applications": {
-		"gecko": {
-			"id": "gabriprinciott@gmail.com"
-		}
-	},
 	"content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self';"
 }
