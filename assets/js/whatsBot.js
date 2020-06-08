@@ -46,7 +46,7 @@ function whatsLog(testo,colore = "#bada55",sfondo = "#222") {
 // Description: Funzione che ritorna il nome della chat attuale
 // Usage: Non ha parametri
 function getChatName() {
-    let el = $("._16vzP ._3XrHh ._1wjpf._3NFp9._3FXB1");
+    let el = $("._2FCjS .DP7CM ._3ko75._5h6Y_._3Whw5");
     // Se e' aperta una chat
     if(typeof(el) !== 'undefined' && el !== null) {
         return el.text();
@@ -60,7 +60,7 @@ function getChatName() {
 // msg = Messaggio da inviare nella chat attuale
 function sendMsgBot(msg) {
     // Campo di input
-    let inputEl = document.querySelectorAll("._3F6QL._2WovP ._2S1VP.copyable-text.selectable-text")[0];
+    let inputEl = document.querySelectorAll("._2FVVk._2UL8j ._3FRCZ.copyable-text.selectable-text")[0];
     console.log(inputEl);
     if(typeof(inputEl) !== 'undefined' && inputEl !== null) {   // Se esiste il campo di input
         inputEl.innerHTML = msg;    // Inserisco il messaggio nel campo di input
@@ -68,7 +68,7 @@ function sendMsgBot(msg) {
         inputEl.dispatchEvent(new Event('input', {
             bubbles: true
         }));
-        let buttonEl = $("._35EW6");    // Pulsante per inviare il messaggio
+        let buttonEl = $("._1JNuk ._1U1xa");    // Pulsante per inviare il messaggio
         if(typeof(buttonEl) !== 'undefined' && buttonEl !== null) { // Se esiste il pulsante di invio del messaggio
             buttonEl.click();   // Clicco il pulsante per inviare il messaggio
         }else {
