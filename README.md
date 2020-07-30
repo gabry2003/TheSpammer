@@ -1,6 +1,6 @@
 # The Spammer
 
-The Spammer è un estensione per Google Chrome con la funzione di far spammare in chat dei messaggi su Whatsapp Web, ha quindi un fine semplice ma tocca il bersaglio.
+The Spammer è un estensione per Google Chrome con la funzione di far spammare in chat dei messaggi su Whatsapp Web, Telegram Web e Google Meet, ha quindi un fine semplice ma tocca il bersaglio.
 Tra le opzioni puoi:
 
 - Scegliere uno o più messaggi da inviare (inserendone uno per riga)
