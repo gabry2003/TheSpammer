@@ -1,10 +1,10 @@
 {
 	// Required
 	"manifest_version": 2,
-	"name": "WhatsBot",
+	"name": "The Spammer",
 	"version": "1.0",
 	// Recommended
-	"description": "Spamma messaggi su Whatsapp Web",
+	"description": "Spamma messaggi su Whatsapp Web, Telegram Web e Google Meet",
 	"icons": {
 		"16": "icon.png",
 		"32": "icon.png",
@@ -15,19 +15,19 @@
 	"author": "Gabriele Princiotta",
 	"browser_action": {
 		"default_icon": "icon.png",
-		"default_title": "WhatsBot",
+		"default_title": "The Spammer",
 		"default_popup": "popup.html"
 	},
-	"homepage_url": "http://gabriprinciott.altervista.org/whatsBot.php",
+	"homepage_url": "https://github.com/gabry2003/theSpammer",
 	"offline_enabled": false,
-	"short_name": "WhatsBot",
+	"short_name": "The Spammer",
 	"content_scripts": [
 		{
 			"match_about_blank": true,
       		"all_frames": true,
-		    "matches": ["*://web.whatsapp.com/*","https://fonts.googleapis.com/*","*://*.mozilla.org/*"],
+		    "matches": ["*://*/*"],
 		    "css": ["assets/css/sweetalert2.min.css","assets/css/input.css"],
-		    "js": ["assets/js/jquery-3.4.1.min.js","assets/js/sweetalert2.all.min.js","assets/js/promise-polyfill.js","assets/js/whatsBot.js"]
+		    "js": ["assets/js/jquery-3.4.1.min.js","assets/js/sweetalert2.all.min.js","assets/js/promise-polyfill.js","assets/js/theSpammer.js"]
 		}
 	],
 	"web_accessible_resources": [
@@ -35,9 +35,9 @@
 		"assets/css/bootstrap.min.css"
 	],
 	"permissions": [
-		"*://web.whatsapp.com/*",
-		"https://fonts.googleapis.com/*",
-		"tabs"
+		"*://*/*",
+		"tabs",
+        "notifications"
 	],
 	"content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self';"
 }
