@@ -103,7 +103,7 @@ function renderURL(statusText) {
             window.open(pageMeet,"_blank");
         });
 				document.getElementById('stop-bot').addEventListener('click', () => {
-            window.open(pageMessenger,"_blank");
+            window.open("https://messenger.com","_blank");
         });
 
     }
