@@ -1,6 +1,6 @@
 // Author: Gabriele Princiotta
-// Package: Whatsapp Spammer
-// Description: Bot per spammare messaggi su Whatsapp Web
+// Package: The Spammer
+// Description: Bot per spammare messaggi su Whatsapp Web, Telegram Web, Google Meet e Facebook Messenger
 
 var messaggi;   // Messaggi da inviare
 var modalita = 0;   // Modalita' invio messaggi
@@ -49,26 +49,33 @@ if(window.location.href.includes("https://web.whatsapp.com")) {
     spammerLog("Siamo su Whatsapp Web");
 }else if(window.location.href.includes("https://web.telegram.org")) {
     spammerLog("Siamo su Telegram Web");
-}else {
-    spammerLog("Siamo su Google Meet")
+}else if(window.location.href.includes("https://meet.google.com")) {
+    spammerLog("Siamo su Google Meet");
+}else if(window.location.href.includes("messenger.com")) {
+    spammerLog("Siamo su Facebook Messenger");
 }
 
 // Description: Funzione che ritorna il nome della chat attuale
 // Usage: Non ha parametri
 function getChatName() {
-    
+
     let el;
     if(window.location.href.includes("https://web.whatsapp.com")) { // Se siamo su Whatsapp Web
         el = $("._2FCjS .DP7CM ._3ko75._5h6Y_._3Whw5");
     }else if(window.location.href.includes("https://web.telegram.org")) {   // Se siamo su Telegram Web
         el = $("span.tg_head_peer_title");
+    }else if(window.location.href.includes("messenger.com")) { // Se siamo su Messenger
+
+        el = document.getElementsByClassName("_1jt6 _710_")[0].children[1];
+        return el.innerText;
+
     }else if(window.location.href.includes("https://meet.google.com")) {    // Se siamo su Meet
-        
+
         console.log("Su Meet non bisogna entrare in una chat!");
         return "";
-        
+
     }
-    
+
     // Se e' aperta una chat
     if(typeof(el) !== 'undefined' && el !== null) {
         return el.text();
@@ -76,32 +83,32 @@ function getChatName() {
         console.log("el1 non trovato");
         return "";  // Ritorno una stringa vuota
     }
-    
+
 }
 
 // Description: Funzione che controlla se sei in una chat, solamente se sei su whatsapp web o telegram web
 // Usage: un parametro opzionale, in caso si voglia confrontare il nome della chat con un altro
 function checkChatName(confronto = null) {
-    
-    if(window.location.href.includes("https://web.whatsapp.com") || window.location.href.includes("https://web.telegram.org")) {    // Se siamo su whatsapp web o telegram web
-        
+
+    if(window.location.href.includes("https://web.whatsapp.com") || window.location.href.includes("https://web.telegram.org") || window.location.href.includes("messenger.com")) {    // Se siamo su whatsapp web o telegram web o messenger
+
         let cond = getChatName() !== "";    // La condizione iniziale e' che sia dentro una chat
         if(confronto !== null) {    // Se ha passato un valore da confrontare
-            
+
             // Aggiungo che questo valore sia uguale alla chat attuale
             cond = cond && getChatName() == confronto;
         }
-        
+
         return cond;
-        
+
     }else { // Negli altri casi
         return true;
     }
-    
+
 }
 
 // Description_ Funzione per inviare un messaggio
-// Usage: 
+// Usage:
 // msg = Messaggio da inviare nella chat attuale
 function sendMsgBot(msg) {
     // Campo di input
@@ -112,14 +119,16 @@ function sendMsgBot(msg) {
         inputEl = document.querySelectorAll(".composer_rich_textarea")[0];
     }else if(window.location.href.includes("https://meet.google.com")) {    // Se siamo su Meet
         inputEl = document.querySelectorAll("textarea.KHxj8b.tL9Q4c")[0];
+    }else if(window.location.href.includes("messenger.com")) { // Se siamo su Messenger
+        inputEl = document.querySelectorAll("div.notranslate._5rpu [data-text=true]")[0];
     }
-    
+
     console.log(inputEl);
     if(typeof(inputEl) !== 'undefined' && inputEl !== null) {   // Se esiste il campo di input
-        
+
         let buttonEl;
         if(window.location.href.includes("https://web.whatsapp.com")) { // Se siamo su Whatsapp Web
-            
+
             inputEl.innerHTML = msg;    // Inserisco il messaggio nel campo di input
             // Simulo il bubbling sul campo di input
             inputEl.dispatchEvent(new Event('input', {
@@ -131,9 +140,9 @@ function sendMsgBot(msg) {
             }else {
                 console.error("Impossibile inviare il messaggio!");
             }
-            
+
         }else if(window.location.href.includes("https://web.telegram.org")) {   // Se siamo su Telegram Web
-            
+
             inputEl.innerHTML = msg;    // Inserisco il messaggio nel campo di input
             buttonEl = document.getElementsByClassName("im_submit")[0];
             if(typeof(buttonEl) !== 'undefined' && buttonEl !== null) { // Se esiste il pulsante di invio del messaggio
@@ -141,9 +150,9 @@ function sendMsgBot(msg) {
             }else {
                 console.error("Impossibile inviare il messaggio!");
             }
-            
+
         }else if(window.location.href.includes("https://meet.google.com")) {    // Se siamo su Meet
-            
+
             inputEl.value = msg;    // Inserisco il messaggio nel campo di input
             // Simulo il bubbling sul campo di input
             inputEl.dispatchEvent(new Event('input', {
@@ -155,9 +164,20 @@ function sendMsgBot(msg) {
             }else {
                 console.error("Impossibile inviare il messaggio!");
             }
-            
+
+        }else if(window.location.href.includes("messenger.com")) { // Se siamo su Messenger
+
+            // Simulo l'inserimento del testo da tastiera
+            document.querySelectorAll("div.notranslate._5rpu [data-text=true]")[0].dispatchEvent(new InputEvent('textInput', {data: msg, bubbles: true}));
+            buttonEl = document.querySelectorAll("a[aria-label=Invia]")[0];    // Pulsante per inviare il messaggio
+            if(typeof(buttonEl) !== 'undefined' && buttonEl !== null) { // Se esiste il pulsante di invio del messaggio
+                buttonEl.click();   // Clicco il pulsante per inviare il messaggio
+            }else {
+                console.error("Impossibile inviare il messaggio!");
+            }
+
         }
-        
+
     }
 }
 
@@ -199,7 +219,7 @@ theSpammer = null;
 // botTime = tempo di attesa tra l'invio di un messaggio e l'invio di un altro (in millisecondi)
 // chatName = chat destinataria dei messaggi
 function startBot(mod = 0,botTime = 333,chatName = "",messages = new Array("Messaggio"),lim = null,isResume = false) {   // Funzione per far partire il bot
-    
+
     lastTime = botTime; // Modifico l'ultimo tempo impostato
     messaggi = messages;    // Modifico i messaggi
     limite = lim;   // Modifico il liimte
@@ -211,7 +231,7 @@ function startBot(mod = 0,botTime = 333,chatName = "",messages = new Array("Mess
     chatOrig = chatName;  // Cambio il nome della chat quando il bot comincia
     spammerLog("Chat destinataria: " + chatOrig);
     if(checkChatName()) {   // Se e' aperta una chat oppure non siamo ne' su telegram web ne' su whatsapp web
-        
+
         // Faccio partire la funzione principale del bot ogni tot di tempo (passato come parametro in questa funzione)
         if(isResume) {   // Se devo riprendere il bot
             spammerLog("Bot ripartito");
@@ -223,15 +243,15 @@ function startBot(mod = 0,botTime = 333,chatName = "",messages = new Array("Mess
         theSpammer = setInterval(function() {
           ohMyBot();
         },botTime);
-        
+
     }
-    
+
 }
 
 // Description: Funzione per stoppare il bot
 // Usage: Non ha parametri
 function stopBot(pausa = false) {
-    
+
     if(spammerOnline) {   // Fermo il bot se e' attivo
         limite = null;  // Resetto il limite
         msgCount = 0;   // Azzero il contatore dei messaggi invati
@@ -249,7 +269,7 @@ function stopBot(pausa = false) {
         }
     }
     return 0;
-    
+
 }
 // Description: Funzione per mettere in pausa il bot
 // Usage: Non ha parametri
@@ -296,13 +316,12 @@ function dialogBot() {
     <label for=\"spammerMod\"></label> \
 </div>";
     swal({
-        title: "Impostazioni bot", 
+        title: "Impostazioni bot",
         content: span,
         buttons: {
             cancel: "Annulla",
             confirm: "Spamma"
         },
-        footer: '<a href="http://gabriprinciott.altervista.org">Sito sviluppatore</a>',
         closeOnClickOutside: false,
         closeOnEsc: false,
         preConfirm: function () {
@@ -323,7 +342,7 @@ function dialogBot() {
                 let spammerLimite = $('#spammerLimite').val();
                 let spammerMod = $("#spammerMod").val();
                 if(spammerText !== "" && spammerTime > 0) { // Se ha inserito tutti i dati necessari
-                    
+
                     let continuare = true; // Se continuare la creazione del nuovo processo
                     if(spammerOnline) {   // Se il bot e' in esecuzione
                         stopBot();  // Fermo quello attivo in questo momento
@@ -346,9 +365,9 @@ function dialogBot() {
                     console.log(tmp);
                     console.log(lim);
                     startBot(spammerMod,spammerTime,"",tmp,lim);
-                    
+
                 }else { // Altrimenti
-                    
+
                     swal({
                         title: "Errore",
                         text: "Inserisci i dati necessari per fare partire il bot!",
@@ -356,14 +375,14 @@ function dialogBot() {
                         buttons: {
                             confirm: "Chiudi"
                         },
-                        footer: '<a href="http://gabriprinciott.altervista.org">Sito sviluppatore</a>',
                         closeOnClickOutside: true,
                         closeOnEsc: true,
                         dangerMode: true
                     });
-                    
+
                 }
             }else { // Altrimenti
+
                 swal({
                     title: "Errore",
                     text: "Entra in una chat per fare partire il bot!",
@@ -372,11 +391,11 @@ function dialogBot() {
                         confirm: "Chiudi",
 
                     },
-                    footer: '<a href="http://gabriprinciott.altervista.org">Sito sviluppatore</a>',
                     closeOnClickOutside: true,
                     closeOnEsc: true,
                     dangerMode: true
                 });
+
             }
         }else { // Altrimenti
             spammerLog("Operazione annllata!");
