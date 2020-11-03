@@ -2,24 +2,25 @@
 // Package: The Spammer
 // Description: Bot per spammare messaggi su Whatsapp Web, Telegram Web, Google Meet e Facebook Messenger
 
-var messaggi;   // Messaggi da inviare
-var modalita = 0;   // Modalita' invio messaggi
-var chatOrig;   // Chat quando il bot e' partito
-var msgIndex = 0;    // Contatore del messaggio che sto attualmente mandando
-var lastIndex = 0;  // Contatore del messaggio che sto attualmente mandando (per metterlo in pausa e ricordarsi a quanti era arrivato)
-var limite = null;  // Limite di messaggi
-var msgCount = 0;   // Contatore dei messaggi inviati
-var lastCount = 0;  // Contatore dei messaggi inviati (per metterlo in pausa e ricordarsi a quanti era arrivato)
-var lastTime = 0;   // Ultimo tempo impostato
-var spammerOnline = false;    // Se il bot e' attivo
-var partito = false; // Se il bot e' partito almeno una volta
-var inPausa = false;    // Se il bot e' stato messo in pausa
+let messaggi;   // Messaggi da inviare
+let modalita = 0;   // Modalita' invio messaggi
+let chatOrig;   // Chat quando il bot e' partito
+let msgIndex = 0;    // Contatore del messaggio che sto attualmente mandando
+let lastIndex = 0;  // Contatore del messaggio che sto attualmente mandando (per metterlo in pausa e ricordarsi a quanti era arrivato)
+let limite = null;  // Limite di messaggi
+let msgCount = 0;   // Contatore dei messaggi inviati
+let lastCount = 0;  // Contatore dei messaggi inviati (per metterlo in pausa e ricordarsi a quanti era arrivato)
+let lastTime = 0;   // Ultimo tempo impostato
+let spammerOnline = false;    // Se il bot e' attivo
+let partito = false; // Se il bot e' partito almeno una volta
+let inPausa = false;    // Se il bot e' stato messo in pausa
+let elencoChat = [];    // Elenco chat del bot
 
 // Description: Funzione per inviare una notifica toast con sweetalert
 // Usage:
 // titolo = titolo della notifica
 // tipo = tipo della notifica (di default success)
-function notifica(titolo,tipo = "") {
+const notifica = (titolo,tipo = '') => {
     swal({
         toast: true,
         position: 'top-end',
@@ -41,7 +42,7 @@ function notifica(titolo,tipo = "") {
 // testo = Testo da loggare
 // colore = Colore del testo
 // sfondo = Colore di sfondo
-function spammerLog(testo,colore = "#bada55",sfondo = "#222") {
+const spammerLog = (testo,colore = '#bada55',sfondo = '#222') => {
     console.log('%c ' + testo, 'background: ' + sfondo + '; color: ' + colore + '; font-weight: bold;');
 }
 
@@ -57,8 +58,7 @@ if(window.location.href.includes("https://web.whatsapp.com")) {
 
 // Description: Funzione che ritorna il nome della chat attuale
 // Usage: Non ha parametri
-function getChatName() {
-
+const getChatName = () => {
     let el;
     if(window.location.href.includes("https://web.whatsapp.com")) { // Se siamo su Whatsapp Web
         el = $("._2FCjS .DP7CM ._3ko75._5h6Y_._3Whw5");
@@ -83,13 +83,56 @@ function getChatName() {
         console.log("el1 non trovato");
         return "";  // Ritorno una stringa vuota
     }
+};
 
-}
+const getElencoChat = () => {
+    if(window.location.href.includes("https://web.whatsapp.com")) { // Se siamo su Whatsapp Web
+        let elencoChat = [];
+        $('.-GlrD._2xoTX ._210SC').each(function() {
+            const immagine = $(this).find('._325lp ._1BjNO img').attr('src') || null;
+            const nomeContatto = [
+                {
+                    testo: $(this).find('._357i8 ._3ko75._5h6Y_._3Whw5').text(),
+                    emoji: () => {
+                        let emojis = '';
+                        $(this).find('._357i8 ._3ko75._5h6Y_._3Whw5 img').each(function() {
+                            emojis += $(this).attr('alt');
+                        });
+                        return emojis;
+                    }
+                },
+                {
+                    testo: $(this).find('._3CneP ._3ko75._5h6Y_._3Whw5').text(),
+                    emoji: () => {
+                        let emojis = '';
+                        $(this).find('._3CneP ._3ko75._5h6Y_._3Whw5 img').each(function() {
+                            emojis += $(this).attr('alt');
+                        });
+                        return emojis;
+                    }
+                }
+            ];
+            const contatto = nomeContatto[0].testo + nomeContatto[0].emoji() || nomeContatto[1].testo + nomeContatto[1].emoji();
+
+            elencoChat.push({
+                el: $(this),
+                contatto: contatto,
+                img: immagine,
+                apriChat: () => {
+                    console.log(`Apro la chat "${contatto}"`)
+                    const el = $(this).find('.eJ0yJ');
+                }
+            });
+        });
+        return elencoChat;
+    }else {
+        return [];
+    }
+};
 
 // Description: Funzione che controlla se sei in una chat, solamente se sei su whatsapp web o telegram web
 // Usage: un parametro opzionale, in caso si voglia confrontare il nome della chat con un altro
-function checkChatName(confronto = null) {
-
+const checkChatName = (confronto = null) => {
     if(window.location.href.includes("https://web.whatsapp.com") || window.location.href.includes("https://web.telegram.org") || window.location.href.includes("messenger.com")) {    // Se siamo su whatsapp web o telegram web o messenger
 
         let cond = getChatName() !== "";    // La condizione iniziale e' che sia dentro una chat
@@ -104,13 +147,12 @@ function checkChatName(confronto = null) {
     }else { // Negli altri casi
         return true;
     }
-
-}
+};
 
 // Description_ Funzione per inviare un messaggio
 // Usage:
 // msg = Messaggio da inviare nella chat attuale
-function sendMsgBot(msg) {
+const sendMsgBot = (msg) => {
     // Campo di input
     let inputEl;
     if(window.location.href.includes("https://web.whatsapp.com")) { // Se siamo su Whatsapp Web
@@ -179,11 +221,11 @@ function sendMsgBot(msg) {
         }
 
     }
-}
+};
 
 // Description: Funzione principale del bot
 // Usage: Non ha parametri
-function ohMyBot() {
+const ohMyBot = () => {
     let chatAttuale = getChatName();  // Nome della chat attuale
     let msg;    // Messaggio da inviare
     if(chatAttuale !== "") spammerLog("Chat attuale: " + chatAttuale);
@@ -207,7 +249,7 @@ function ohMyBot() {
             }
         }
     }
-}
+};
 
 // Variabile che contiene il bot, per poterlo dopo fermare
 theSpammer = null;
@@ -218,8 +260,7 @@ theSpammer = null;
 //      1 = in modo casuale
 // botTime = tempo di attesa tra l'invio di un messaggio e l'invio di un altro (in millisecondi)
 // chatName = chat destinataria dei messaggi
-function startBot(mod = 0,botTime = 333,chatName = "",messages = new Array("Messaggio"),lim = null,isResume = false) {   // Funzione per far partire il bot
-
+const startBot = (mod = 0,botTime = 333,chatName = '',messages = ['Messaggio'],lim = null,isResume = false) => {   // Funzione per far partire il bot
     lastTime = botTime; // Modifico l'ultimo tempo impostato
     messaggi = messages;    // Modifico i messaggi
     limite = lim;   // Modifico il liimte
@@ -227,7 +268,7 @@ function startBot(mod = 0,botTime = 333,chatName = "",messages = new Array("Mess
     spammerOnline = true; // Modifico lo stato del bot
     partito = true; // Specifico che il bot e' partito almeno una volta
     isPausa = true;
-    if(chatName == "") chatName = getChatName();
+    if(chatName == '') chatName = getChatName();
     chatOrig = chatName;  // Cambio il nome della chat quando il bot comincia
     spammerLog("Chat destinataria: " + chatOrig);
     if(checkChatName()) {   // Se e' aperta una chat oppure non siamo ne' su telegram web ne' su whatsapp web
@@ -245,12 +286,11 @@ function startBot(mod = 0,botTime = 333,chatName = "",messages = new Array("Mess
         },botTime);
 
     }
-
-}
+};
 
 // Description: Funzione per stoppare il bot
 // Usage: Non ha parametri
-function stopBot(pausa = false) {
+const stopBot = (pausa = false) => {
 
     if(spammerOnline) {   // Fermo il bot se e' attivo
         limite = null;  // Resetto il limite
@@ -269,11 +309,11 @@ function stopBot(pausa = false) {
         }
     }
     return 0;
+};
 
-}
 // Description: Funzione per mettere in pausa il bot
 // Usage: Non ha parametri
-function pauseBot() {
+const pauseBot = () =>{
     if(spammerOnline) {   // Metto in pausa il bot se e' attivo
         // Salvo i dati necessari a riprendere dopo
         lastCount = msgCount;
@@ -284,20 +324,25 @@ function pauseBot() {
         msgIndex = lastIndex;
     }
     return 0;
-}
+};
+
 // Description: Funzione per riprendere il bot da dov'era
 // Usage: Non ha parametri
-function resumeBot() {
+const resumeBot = () => {
     if(!spammerOnline && partito && isPausa) {  // Se il bot era stoppato ed e' partito almeno una volta
         startBot(modalita,lastTime,"",messaggi,limite,true);    // Lo faccio partire di nuovo
     }
     return 0;
-}
+};
+
 // Description: Funzione che apre una finestra di dialogo per fare partire il bot in modalita' grafica
 // Usage: Non ha parametri
-function dialogBot() {
+const dialogBot = () => {
     spammerLog("Visualizzo l'alert per scegliere le opzioni e fare partire il bot");
-    var span = document.createElement("span");
+    elencoChat = getElencoChat();
+    console.log(elencoChat);
+    elencoChat[0].apriChat();
+    let span = document.createElement("span");
     span.innerHTML = "<div class=\"swal-form\"> \
     <p style=\"color:#000;\">Messaggi da inviare, ogni riga un messaggio<br><br></p> \
     <textarea id=\"spammerText\" class=\"nice-input swal-form-field\" style=\"width:100%;color:#000;\"></textarea> \
@@ -324,7 +369,7 @@ function dialogBot() {
         },
         closeOnClickOutside: false,
         closeOnEsc: false,
-        preConfirm: function () {
+        preConfirm: () => {
             return new Promise((resolve, reject) => {
                 resolve({
                     a: $('#spammerText').val(),
@@ -334,7 +379,7 @@ function dialogBot() {
                 });
             });
         }
-    }).then(function(isConfirm) {
+    }).then((isConfirm) => {
         if(isConfirm) { // Se ha confermato l'inizio del bot
             if(checkChatName()) {  // Se e' in una chat ed e' su whatsapp web o telegram web (gli unici due dove ci sono le chat)
                 let spammerText = $('#spammerText').val();
@@ -404,5 +449,6 @@ function dialogBot() {
         spammerLog("Operazione annullata!");
     });
     return 0;
-}
+};
+
 spammerLog("theSpammer caricato");
