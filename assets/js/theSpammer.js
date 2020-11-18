@@ -89,6 +89,7 @@ const getElencoChat = () => {
     if(window.location.href.includes("https://web.whatsapp.com")) { // Se siamo su Whatsapp Web
         let elencoChat = [];
         $('.-GlrD._2xoTX ._210SC').each(function() {
+            console.log($(this));
             const immagine = $(this).find('._325lp ._1BjNO img').attr('src') || null;
             const nomeContatto = [
                 {
@@ -112,7 +113,8 @@ const getElencoChat = () => {
                     }
                 }
             ];
-            const contatto = nomeContatto[0].testo + nomeContatto[0].emoji() || nomeContatto[1].testo + nomeContatto[1].emoji();
+
+            const contatto = nomeContatto[0].testo + nomeContatto[0].emoji() || nomeContatto[1].testo + nomeContatto[1].emoji() || null;
 
             elencoChat.push({
                 el: $(this),
