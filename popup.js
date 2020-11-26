@@ -12,6 +12,7 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 		 file: "https://fonts.googleapis.com/css?family=Neucha|Cabin+Sketch&display=swap"
 	 });
 });
+
 function getCurrentTabUrl(callback) {
 	var queryInfo = {
 		active: true,
@@ -25,10 +26,10 @@ function getCurrentTabUrl(callback) {
 }
 
 function renderURL(statusText) {
-		let pageWhatsapp = "https://web.whatsapp.com";
-		let pageTelegram = "https://web.telegram.org";
+	let pageWhatsapp = "https://web.whatsapp.com";
+	let pageTelegram = "https://web.telegram.org";
     let pageMeet = "https://meet.google.com";
-		let pageMessenger = "messenger.com";
+	let pageMessenger = "messenger.com";
 
     if (statusText.includes(pageWhatsapp) || statusText.includes(pageTelegram) || statusText.includes(pageMeet) || statusText.includes(pageMessenger)) {   // Se l'utente e' su whatsapp web o su telegram web
 

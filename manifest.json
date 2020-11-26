@@ -21,10 +21,10 @@
 	"content_scripts": [
 		{
 			"match_about_blank": true,
-    	"all_frames": true,
-	    "matches": ["<all_urls>"],
-	    "css": ["assets/css/sweetalert2.min.css","assets/css/input.css","assets/css/customSweet.css"],
-	    "js": ["assets/js/jquery-3.4.1.min.js","assets/js/sweetalert2.all.min.js","assets/js/promise-polyfill.js","assets/js/theSpammer.js"]
+    		"all_frames": true,
+	    	"matches": ["<all_urls>"],
+	    	"css": ["assets/css/sweetalert2.min.css","assets/css/input.css","assets/css/customSweet.css"],
+	    	"js": ["assets/js/jquery-3.4.1.min.js","assets/js/sweetalert2.all.min.js","assets/js/promise-polyfill.js","assets/js/theSpammer.js"]
 		}
 	],
 	"web_accessible_resources": [
@@ -36,7 +36,7 @@
 		"*://*/*",
 		"https://fonts.googleapis.com",
 		"tabs",
-    "notifications"
+    	"notifications"
 	],
 	"content_security_policy": "script-src 'self' https://fonts.googleapis.com; object-src 'self'"
 }

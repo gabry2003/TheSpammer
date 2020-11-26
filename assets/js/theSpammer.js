@@ -341,9 +341,13 @@ const resumeBot = () => {
 // Usage: Non ha parametri
 const dialogBot = () => {
     spammerLog("Visualizzo l'alert per scegliere le opzioni e fare partire il bot");
-    elencoChat = getElencoChat();
-    console.log(elencoChat);
-    elencoChat[0].apriChat();
+    try {
+        elencoChat = getElencoChat();
+        console.log(elencoChat);
+        elencoChat[0].apriChat();
+    } catch(e) {
+        console.error(e);
+    }
     let span = document.createElement("span");
     span.innerHTML = "<div class=\"swal-form\"> \
     <p style=\"color:#000;\">Messaggi da inviare, ogni riga un messaggio<br><br></p> \
