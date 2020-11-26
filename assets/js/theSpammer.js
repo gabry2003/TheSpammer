@@ -1,7 +1,9 @@
-// Author: Gabriele Princiotta
-// Package: The Spammer
-// Description: Bot per spammare messaggi su Whatsapp Web, Telegram Web, Google Meet e Facebook Messenger
-
+/**
+ * Bot per spammare messaggi su Whatsapp Web, Telegram Web, Google Meet e Facebook Messenger
+ * 
+ * @author Gabriele Princiotta
+ * @version 1.0
+ */
 let messaggi;   // Messaggi da inviare
 let modalita = 0;   // Modalita' invio messaggi
 let chatOrig;   // Chat quando il bot e' partito
@@ -15,12 +17,17 @@ let spammerOnline = false;    // Se il bot e' attivo
 let partito = false; // Se il bot e' partito almeno una volta
 let inPausa = false;    // Se il bot e' stato messo in pausa
 let elencoChat = [];    // Elenco chat del bot
-
-// Description: Funzione per inviare una notifica toast con sweetalert
-// Usage:
-// titolo = titolo della notifica
-// tipo = tipo della notifica (di default success)
-const notifica = (titolo,tipo = '') => {
+ 
+/**
+ * Funzione per inviare una notifica toast con sweetalert
+ * 
+ * @author Gabriele Princiotta
+ * @function
+ * @version 1.0
+ * @param {string} titolo titolo della notifica
+ * @param {string} [tipo='success'] tipo della notifica (di default success)
+ */
+const notifica = (titolo,tipo = 'success') => {
     swal({
         toast: true,
         position: 'top-end',
@@ -37,11 +44,16 @@ const notifica = (titolo,tipo = '') => {
     return 0;
 }
 
-// Description: Funzione per effettuare un log piu' bello esteticamente
-// Usage;
-// testo = Testo da loggare
-// colore = Colore del testo
-// sfondo = Colore di sfondo
+/**
+ * Funzione per effettuare un log piu' bello esteticamente
+ * 
+ * @function
+ * @author Gabriele Princiotta
+ * @version 1.0
+ * @param {*} testo Testo da loggare
+ * @param {*} [colore='#bada55'] Colore del testo
+ * @param {*} [sfondo='#222'] Colore di sfondo
+ */
 const spammerLog = (testo,colore = '#bada55',sfondo = '#222') => {
     console.log('%c ' + testo, 'background: ' + sfondo + '; color: ' + colore + '; font-weight: bold;');
 }
@@ -56,12 +68,13 @@ if(window.location.href.includes("https://web.whatsapp.com")) {
     spammerLog("Siamo su Facebook Messenger");
 }
 
-// Description: Funzione che ritorna il nome della chat attuale
-// Usage: Non ha parametri
+/**
+ * Ritorna il nome della chat attuale
+ */
 const getChatName = () => {
     let el;
     if(window.location.href.includes("https://web.whatsapp.com")) { // Se siamo su Whatsapp Web
-        el = $("._2FCjS .DP7CM ._3ko75._5h6Y_._3Whw5");
+        el = $('#main span._1hI5g._1XH7x._1VzZY');
     }else if(window.location.href.includes("https://web.telegram.org")) {   // Se siamo su Telegram Web
         el = $("span.tg_head_peer_title");
     }else if(window.location.href.includes("messenger.com")) { // Se siamo su Messenger
@@ -132,8 +145,11 @@ const getElencoChat = () => {
     }
 };
 
-// Description: Funzione che controlla se sei in una chat, solamente se sei su whatsapp web o telegram web
-// Usage: un parametro opzionale, in caso si voglia confrontare il nome della chat con un altro
+/**
+ * Funzione che controlla se sei in una chat, solamente se sei su whatsapp web o telegram web
+ * 
+ * @param {*} [confronto=null] 
+ */
 const checkChatName = (confronto = null) => {
     if(window.location.href.includes("https://web.whatsapp.com") || window.location.href.includes("https://web.telegram.org") || window.location.href.includes("messenger.com")) {    // Se siamo su whatsapp web o telegram web o messenger
 
@@ -151,14 +167,19 @@ const checkChatName = (confronto = null) => {
     }
 };
 
-// Description_ Funzione per inviare un messaggio
-// Usage:
-// msg = Messaggio da inviare nella chat attuale
+/**
+ * Funzione per inviare un messaggio
+ * 
+ * @function
+ * @author Gabriele Princiotta
+ * @version 1.0
+ * @param {string} msg Messaggio da inviare nella chat attuale
+ */
 const sendMsgBot = (msg) => {
     // Campo di input
     let inputEl;
     if(window.location.href.includes("https://web.whatsapp.com")) { // Se siamo su Whatsapp Web
-        inputEl = document.querySelectorAll("._2FVVk._2UL8j ._3FRCZ.copyable-text.selectable-text")[0];
+        inputEl = document.querySelectorAll('#main div.copyable-text.selectable-text')[0];
     }else if(window.location.href.includes("https://web.telegram.org")) {   // Se siamo su Telegram Web
         inputEl = document.querySelectorAll(".composer_rich_textarea")[0];
     }else if(window.location.href.includes("https://meet.google.com")) {    // Se siamo su Meet
@@ -178,7 +199,7 @@ const sendMsgBot = (msg) => {
             inputEl.dispatchEvent(new Event('input', {
                 bubbles: true
             }));
-            buttonEl = $("._1JNuk ._1U1xa");    // Pulsante per inviare il messaggio
+            buttonEl = $('._3qpzV button._2Ujuu');    // Pulsante per inviare il messaggio
             if(typeof(buttonEl) !== 'undefined' && buttonEl !== null) { // Se esiste il pulsante di invio del messaggio
                 buttonEl.click();   // Clicco il pulsante per inviare il messaggio
             }else {
@@ -225,8 +246,9 @@ const sendMsgBot = (msg) => {
     }
 };
 
-// Description: Funzione principale del bot
-// Usage: Non ha parametri
+/**
+ * Funzione principale del bot
+ */
 const ohMyBot = () => {
     let chatAttuale = getChatName();  // Nome della chat attuale
     let msg;    // Messaggio da inviare
@@ -253,14 +275,23 @@ const ohMyBot = () => {
     }
 };
 
-// Variabile che contiene il bot, per poterlo dopo fermare
+/**
+ * @description Variabile che contiene il bot, per poterlo dopo fermare
+*/
 theSpammer = null;
-// Description: Funzione per far partire il bot
-// Usage:
-// mod = modalita' invio messaggi
-//      0 = tutti a giro
-//      1 = in modo casuale
-// botTime = tempo di attesa tra l'invio di un messaggio e l'invio di un altro (in millisecondi)
+/**
+ * Funzione per far partire il bot
+ * 
+ * @author Gabriele Princiotta
+ * @function
+ * @version 1.0
+ * @param {number} [mod] modalita' invio messaggi (0 = tutti a giro, 1 = in modo casuale)
+ * @param {number} [botTime] tempo di attesa tra l'invio di un messaggio e l'invio di un altro (in millisecondi)
+ * @param {string} [chatName] 
+ * @param {string[]} [messages=['Messaggio]] 
+ * @param {number} [lim=null] 
+ * @param {boolean} [isResume=false] 
+ */
 // chatName = chat destinataria dei messaggi
 const startBot = (mod = 0,botTime = 333,chatName = '',messages = ['Messaggio'],lim = null,isResume = false) => {   // Funzione per far partire il bot
     lastTime = botTime; // Modifico l'ultimo tempo impostato
@@ -290,8 +321,10 @@ const startBot = (mod = 0,botTime = 333,chatName = '',messages = ['Messaggio'],l
     }
 };
 
-// Description: Funzione per stoppare il bot
-// Usage: Non ha parametri
+/**
+ * Funzione per stoppare il bot
+ * @param {boolean} [pausa=false] 
+ */
 const stopBot = (pausa = false) => {
 
     if(spammerOnline) {   // Fermo il bot se e' attivo
@@ -313,8 +346,9 @@ const stopBot = (pausa = false) => {
     return 0;
 };
 
-// Description: Funzione per mettere in pausa il bot
-// Usage: Non ha parametri
+/**
+ * Funzione per mettere in pausa il bot
+ */
 const pauseBot = () =>{
     if(spammerOnline) {   // Metto in pausa il bot se e' attivo
         // Salvo i dati necessari a riprendere dopo
@@ -328,8 +362,9 @@ const pauseBot = () =>{
     return 0;
 };
 
-// Description: Funzione per riprendere il bot da dov'era
-// Usage: Non ha parametri
+/**
+ * Funzione per riprendere il bot da dov'era
+ */
 const resumeBot = () => {
     if(!spammerOnline && partito && isPausa) {  // Se il bot era stoppato ed e' partito almeno una volta
         startBot(modalita,lastTime,"",messaggi,limite,true);    // Lo faccio partire di nuovo
@@ -337,8 +372,9 @@ const resumeBot = () => {
     return 0;
 };
 
-// Description: Funzione che apre una finestra di dialogo per fare partire il bot in modalita' grafica
-// Usage: Non ha parametri
+/**
+ * Funzione che apre una finestra di dialogo per fare partire il bot in modalita' grafica
+ */
 const dialogBot = () => {
     spammerLog("Visualizzo l'alert per scegliere le opzioni e fare partire il bot");
     try {
