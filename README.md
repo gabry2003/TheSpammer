@@ -1,23 +1,29 @@
-# The Spammer
+# TheSpammer
 
-The Spammer è un estensione per Google Chrome con la funzione di far spammare in chat dei messaggi su Whatsapp Web, Telegram Web, Google Meet e Facebook Messenger, ha quindi un fine semplice ma tocca il bersaglio.
-Tra le opzioni puoi:
+Spamma messaggi su Whatsapp Web, Telegram Web e Google Meet
 
-- Scegliere uno o più messaggi da inviare (inserendone uno per riga)
-- Scegliere la modalità di invio dei messaggi, ovvero:
-- Invio di tutti i messaggi inseriti a giro, dal primo all'ultimo e poi ricomincia
-- Invio di un messaggio casuale tra quelli inseriti
-- Scegliere il tempo da aspettare tra un messaggio e l'altro (in millisecondi)
-- Scegliere un eventuale numero limite di messaggi per mandare un numero di preciso di messaggi
+## Install
 
-## Guida all'installazione:
+	$ npm install
 
-1. Scarica il codice sorgente
-2. Estrailo in una cartella chiamata whatsBot
-3. Apri una nuova scheda e vai su chrome://extensions
-4. Attiva la modalità amministratore in alto a destra
-5. Clicca su "Carica estensione non pacchettizzata"
-6. Seleziona la cartella whatsBot
-7. Conferma l'installazione
+## Development
 
-Ecco fatto, adesso per apportare le modifiche, se hai già Whatsapp Web o gli altri aperti chiudili e riaprili.
+    npm run dev chrome
+    npm run dev firefox
+    npm run dev opera
+    npm run dev edge
+
+## Build
+
+    npm run build chrome
+    npm run build firefox
+    npm run build opera
+    npm run build edge
+
+## Environment
+
+The build tool also defines a variable named `process.env.NODE_ENV` in your scripts. 
+
+## Docs
+
+* [webextension-toolbox](https://github.com/HaNdTriX/webextension-toolbox)

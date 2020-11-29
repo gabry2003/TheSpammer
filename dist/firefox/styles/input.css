@@ -1,0 +1,5 @@
+input,textarea {padding:5px; border:2px solid #ccc; 
+-webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+input:focus,textarea:focus {border-color:#333; }

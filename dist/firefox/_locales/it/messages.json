@@ -1,0 +1,18 @@
+{
+  "appName": {
+    "message": "TheSpammer",
+    "description": "Nome dell'applicazione"
+  },
+  "appShortName": {
+    "message": "TheSpammer",
+    "description": "LO short_name (massimo 12 caratteri raccomandati) è una versione corta del nome dell'app."
+  },
+  "appDescription": {
+    "message": "Spamma messaggi su Whatsapp Web, Telegram Web e Google Meet",
+    "description": "Descrizione dell'applicazione"
+  },
+  "browserActionTitle": {
+    "message": "TheSpammer",
+    "description": "Titolo nel pulsante del browser"
+  }
+}

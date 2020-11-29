@@ -1,0 +1,66 @@
+{
+  "name": "__MSG_appName__",
+  "description": "__MSG_appDescription__",
+  "version": "2.0",
+  "short_name": "__MSG_appShortName__",
+  "manifest_version": 2,
+  "default_locale": "it",
+  "icons": {
+    "16": "images/icon.png",
+    "32": "images/icon.png",
+    "48": "images/icon.png",
+    "128": "images/icon.png"
+  },
+  "background": {
+    "scripts": [
+      "scripts/background.js"
+    ]
+  },
+  "browser_action": {
+    "default_icon": {
+      "19": "images/icon.png",
+      "38": "images/icon.png"
+    },
+    "default_title": "__MSG_browserActionTitle__",
+    "default_popup": "pages/popup.html"
+  },
+  "options_page": "pages/options.html",
+  "options_ui": {
+    "page": "pages/options.html",
+    "chrome_style": true,
+    "open_in_tab": false
+  },
+  "omnibox": {
+    "keyword": "TheSpammer"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "css": [
+        "styles/sweetalert2.min.css",
+        "styles/bootstrap.min.css",
+        "styles/customSweet.css"
+      ],
+      "js": [
+        "scripts/jquery-3.4.1.min.js",
+        "scripts/sweetalert2.all.min.js",
+        "scripts/promise-polyfill.js",
+        "scripts/theSpammer.js"
+      ],
+      "run_at": "document_end",
+      "all_frames": false
+    }
+  ],
+  "permissions": [
+    "activeTab",
+    "cookies",
+    "privacy",
+    "sessions",
+    "storage",
+    "tabs",
+    "<all_urls>"
+  ]
+}
