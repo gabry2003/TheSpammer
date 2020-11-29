@@ -3,7 +3,5 @@ browser.runtime.onInstalled.addListener((details) => {
 })
 
 browser.browserAction.setBadgeText({
-  text: `'Allo`
+  text: `@gabriprinciott`
 })
-
-console.log(`'Allo 'Allo! Event Page for Browser Action`)
