@@ -1,10 +1,18 @@
 # TheSpammer
 
-Spamma messaggi su Whatsapp Web, Telegram Web e Google Meet
+Estensione per browser che spamma messaggi su Whatsapp Web, Telegram Web e Google Meet.
+
 
 ## Install
 
 	$ npm install
+
+## Info. compilaion process
+OS: Fedora 32
+IDE: VS Code
+
+node v12.18.3
+npm 6.14.8
 
 ## Development
 
@@ -15,6 +23,7 @@ Spamma messaggi su Whatsapp Web, Telegram Web e Google Meet
 
 ## Build
 
+    # Oppure usa ./compile.sh
     npm run build chrome
     npm run build firefox
     npm run build opera
