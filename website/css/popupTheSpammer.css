@@ -1,0 +1,45 @@
+#popup-the-spammer .cd-accordion__item {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+#popup-the-spammer .cd-accordion__item,
+.cd-article-link {
+    font-weight: 800;
+    color: #fff;
+}
+
+#popup-the-spammer .cd-accordion {
+    background: hsl(218, 7%, 32%);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, .1), 0 16px 48px rgba(0, 0, 0, .1), 0 24px 60px rgba(0, 0, 0, .1);
+}
+
+#popup-the-spammer .margin-bottom-lg {
+    margin-bottom: 2em;
+}
+
+#popup-the-spammer .margin-top-lg {
+    margin-top: 2em;
+}
+
+#popup-the-spammer .cd-accordion__label {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    padding: 0.75em 1.25em;
+    background: hsl(218, 7%, 32%);
+    --color-shadow: lightness(hsl(218, 7%, 32%), 1.2);
+    box-shadow: inset 0 -1px lightness(hsl(218, 7%, 32%), 1.2);
+    color: hsl(0, 0%, 100%);
+}
+
+#popup-the-spammer ol,
+#popup-the-spammer ul {
+    list-style: none;
+}
