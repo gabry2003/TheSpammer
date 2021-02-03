@@ -1,8 +1,8 @@
 let bbrowser;
-if(chrome) {
-	bbrowser = chrome;
-}else {
-	bbrowser = browser;
+if (chrome) {
+    bbrowser = chrome;
+} else {
+    bbrowser = browser;
 }
 
 /*bbrowser.tabs.insertCSS({
@@ -10,82 +10,68 @@ if(chrome) {
 });*/
 
 const getCurrentTabUrl = (callback) => {
-	const queryInfo = {
-		active: true,
-		currentWindow: true
-    };
-    
-	bbrowser.tabs.query(queryInfo, (tabs) => {
-		const tab = tabs[0];
-		const url = tab.url;
-		callback(url);
-	});
+    bbrowser.tabs.query({
+        active: true,
+        currentWindow: true
+    }, (tabs) => {
+        const tab = tabs[0];
+        const url = tab.url;
+        callback(url, tab.id);
+    });
 }
 
-const renderURL = (statusText) => {
-	const pageWhatsapp = 'https://web.whatsapp.com';
-	const pageTelegram = 'https://web.telegram.org';
+const renderURL = (url, id) => {
+    const pageWhatsapp = 'https://web.whatsapp.com';
+    const pageTelegram = 'https://web.telegram.org';
     const pageMeet = 'https://meet.google.com';
     const pageMessenger = 'messenger.com';
-    
-    bbrowser.tabs.executeScript({
-        code: `console.log('URL attuale');console.log('${statusText}');`
-    });
 
-    if (statusText.includes(pageWhatsapp) || statusText.includes(pageTelegram) || statusText.includes(pageMeet) || statusText.includes(pageMessenger)) {   // Se l'utente e' su whatsapp web o su telegram web
+    if (url.includes(pageWhatsapp) || url.includes(pageTelegram) || url.includes(pageMeet) || url.includes(pageMessenger)) { // Se l'utente e' su whatsapp web o su telegram web
         // Fai partire il bot
         document.getElementById('start-bot').addEventListener('click', () => {
-            bbrowser.tabs.executeScript({
-                code: 'dialogBot();'
-            });
+            bbrowser.tabs.sendMessage(id, { 'message': 'dialogBot' });
         });
 
         // Metti in pausa il bot
         document.getElementById('pause-bot').addEventListener('click', () => {
-            bbrowser.tabs.executeScript({
-                code: 'pauseBot();'
-            });
+            bbrowser.tabs.sendMessage(id, { 'message': 'pauseBot' });
         });
 
         // Riprendi il bot
         document.getElementById('resume-bot').addEventListener('click', () => {
-            bbrowser.tabs.executeScript({
-                code: 'resumeBot();'
-            });
+            bbrowser.tabs.sendMessage(id, { 'message': 'resumeBot' });
         });
 
         // Ferma il bot
         document.getElementById('stop-bot').addEventListener('click', () => {
-            bbrowser.tabs.executeScript({
-                code: 'stopBot();'
-            });
+            bbrowser.tabs.sendMessage(id, { 'message': 'stopBot' });
         });
-    }else { // Altrimenti, se e' su un'altra pagina
+    } else { // Altrimenti, se e' su un'altra pagina
         // Cambio il testo
         document.getElementById('start-bot').innerHTML = 'Apri Whatsapp Web';
         document.getElementById('pause-bot').innerHTML = 'Apri Telegram Web';
         document.getElementById('resume-bot').innerHTML = 'Apri Google Meet';
-		document.getElementById('stop-bot').innerHTML = 'Apri Facebook Messenger';
+        document.getElementById('stop-bot').innerHTML = 'Apri Facebook Messenger';
 
         // Inserisco gli eventi
         document.getElementById('start-bot').addEventListener('click', () => {
-            window.open(pageWhatsapp,'_blank');
+            window.open(pageWhatsapp, '_blank');
         });
         document.getElementById('pause-bot').addEventListener('click', () => {
-            window.open(pageTelegram,'_blank');
+            window.open(pageTelegram, '_blank');
         });
         document.getElementById('resume-bot').addEventListener('click', () => {
-            window.open(pageMeet,'_blank');
+            window.open(pageMeet, '_blank');
         });
-		document.getElementById('stop-bot').addEventListener('click', () => {
-            window.open('https://messenger.com','_blank');
+        document.getElementById('stop-bot').addEventListener('click', () => {
+            window.open('https://messenger.com', '_blank');
         });
 
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-	getCurrentTabUrl((url) => {
-		renderURL(url);
-	});
+    getCurrentTabUrl((url, id) => {
+        renderURL(url, id);
+    });
 });

@@ -1,7 +1,7 @@
 browser.runtime.onInstalled.addListener((details) => {
-  console.log('previousVersion', details.previousVersion)
-})
+    console.log('previousVersion', details.previousVersion)
+});
 
-browser.browserAction.setBadgeText({
+/*browser.browserAction.setBadgeText({
   text: `@gabriprinciott`
-})
+})*/

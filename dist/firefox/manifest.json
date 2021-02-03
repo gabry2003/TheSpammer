@@ -3,6 +3,7 @@
   "description": "__MSG_appDescription__",
   "version": "2.0",
   "short_name": "__MSG_appShortName__",
+  "homepage_url": "https://github.com/gabry2003/TheSpammer",
   "manifest_version": 2,
   "default_locale": "it",
   "icons": {
@@ -14,7 +15,8 @@
   "background": {
     "scripts": [
       "scripts/background.js"
-    ]
+    ],
+    "persistent": false
   },
   "browser_action": {
     "default_icon": {
@@ -30,14 +32,14 @@
     "chrome_style": true,
     "open_in_tab": false
   },
-  "omnibox": {
-    "keyword": "TheSpammer"
-  },
+  "offline_enabled": false,
+  "content_security_policy": "script-src 'self' https://ajax.googleapis.com; object-src 'self'",
   "content_scripts": [
     {
       "matches": [
-        "http://*/*",
-        "https://*/*"
+        "*://web.whatsapp.com/*",
+        "*://meet.google.com/",
+        "*://*.messenger.com/"
       ],
       "css": [
         "styles/sweetalert2.min.css",
@@ -45,13 +47,11 @@
         "styles/customSweet.css"
       ],
       "js": [
-        "scripts/jquery-3.4.1.min.js",
-        "scripts/sweetalert2.all.min.js",
+        "scripts/jquery.min.js",
         "scripts/promise-polyfill.js",
+        "scripts/sweetalert2.all.min.js",
         "scripts/theSpammer.js"
-      ],
-      "run_at": "document_end",
-      "all_frames": false
+      ]
     }
   ],
   "permissions": [
@@ -61,6 +61,9 @@
     "sessions",
     "storage",
     "tabs",
-    "<all_urls>"
+    "*://code.jquery.com/*",
+    "*://web.whatsapp.com/*",
+    "*://meet.google.com/",
+    "*://*.messenger.com/"
   ]
 }
