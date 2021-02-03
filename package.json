@@ -1,12 +1,13 @@
 {
-  "name": "TheSpammer",
-  "version": "0.0.1",
-  "description": "Spamma messaggi su Whatsapp Web, Telegram Web e Google Meet",
-  "scripts": {
-    "dev": "webextension-toolbox dev",
-    "build": "webextension-toolbox build"
-  },
-  "devDependencies": {
-    "webextension-toolbox": "latest"
-  }
+    "name": "TheSpammer",
+    "version": "0.0.1",
+    "description": "Spamma messaggi su Whatsapp Web, Telegram Web e Google Meet",
+    "scripts": {
+        "dev": "webextension-toolbox dev",
+        "build": "webextension-toolbox build",
+        "buildAll": "webextension-toolbox build chrome && webextension-toolbox build firefox && webextension-toolbox build opera && webextension-toolbox build edge"
+    },
+    "devDependencies": {
+        "webextension-toolbox": "latest"
+    }
 }
