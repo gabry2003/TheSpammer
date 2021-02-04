@@ -16,6 +16,8 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/popupTheSpammer.css">
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />
+
     <!-- Icona -->
     <link rel="apple-touch-icon" sizes="57x57" href="icon/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="icon/apple-icon-60x60.png">
@@ -51,56 +53,154 @@
                 <div class="col-md-8 mx-auto text-center">
                     <h1>Bot per spammare messaggi</h1>
                     <p class="lead mb-5">
-                        TheSpammer è un'estensione per browser che permette di spammare messaggi su Whatsapp Web, Telegram Web, Google Meet e Facebook Messenger.<br>
+                        TheSpammer è un'estensione per browser che permette di spammare messaggi su Whatsapp Web,
+                        Telegram Web, Google Meet e Facebook Messenger.<br>
                         Provala per infastidire i tuoi amici😄
                     </p>
-                    <a href="https://github.com/gabry2003/TheSpammer/blob/master/INSTALL.md" class="btn btn-success svg-icon">
+                    <a href="https://github.com/gabry2003/TheSpammer/blob/master/INSTALL.md"
+                        class="btn btn-success svg-icon">
                         <em class="mr-2" data-feather="github"></em> Guida all'installazione
                     </a>
                 </div>
             </div>
             <div class="row mt-5">
                 <div class="col-md-9 mx-auto">
-                    <div class="code-window" style="background-image: linear-gradient(to right top, #4aadda, #00c5e0, #00d9bf, #09e77d, #a8eb12);">
-                        <div class="dots">
-                            <div class="red"></div>
-                            <div class="orange"></div>
-                            <div class="green"></div>
-                        </div>
-                        <div id="popup-the-spammer">
-                            <section class="container max-width-sm">
-                                <div class="text-component text-center">
-                                    <h1>The Spammer</h1>
-                                </div>
+                    <div class="swiper-container">
+                        <!-- Add Pagination -->
+                        <div class="swiper-pagination"></div>
+                        <!-- Add Arrows -->
+                        <div class="swiper-button-next"></div>
+                        <div class="swiper-button-prev"></div>
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide">
+                                <div class="code-window"
+                                    style="background-image: linear-gradient(to right top, #4aadda, #00c5e0, #00d9bf, #09e77d, #a8eb12);">
+                                    <div class="dots">
+                                        <div class="red"></div>
+                                        <div class="orange"></div>
+                                        <div class="green"></div>
+                                    </div>
+                                    <div id="popup-the-spammer">
+                                        <section class="container max-width-sm">
+                                            <div class="text-component text-center">
+                                                <h1>The Spammer</h1>
+                                            </div>
 
-                                <ul class="cd-accordion cd-accordion--animated margin-top-lg margin-bottom-lg">
-                                    <li class="cd-accordion__item">
-                                        <a class="cd-accordion__label cd-accordion__label--icon-img" href="javascript: return false;" style="text-decoration: none;" id="start-bot">
-                                            <span>Fai partire il bot</span>
-                                        </a>
-                                    </li>
-                                    <li class="cd-accordion__item">
-                                        <a class="cd-accordion__label cd-accordion__label--icon-img" href="javascript: return false;" style="text-decoration: none;" id="pause-bot">
-                                            <span>Metti in pausa il bot</span>
-                                        </a>
-                                    </li>
-                                    <li class="cd-accordion__item">
-                                        <a class="cd-accordion__label cd-accordion__label--icon-img" href="javascript: return false;" style="text-decoration: none;" id="resume-bot">
-                                            <span>Fai ripartire il bot</span>
-                                        </a>
-                                    </li>
-                                    <li class="cd-accordion__item">
-                                        <a class="cd-accordion__label cd-accordion__label--icon-img" href="javascript: return false;" style="text-decoration: none;" id="stop-bot">
-                                            <span>Ferma il bot</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                                <p>👉
-                                    <a href="https://gabriprinciott.altervista.org" class="cd-article-link" target="_blank" style="text-decoration: underline;color: rgba(0, 0, 0, 0.5);">By Gabriele Princiotta</a></p>
-                            </section>
+                                            <ul
+                                                class="cd-accordion cd-accordion--animated margin-top-lg margin-bottom-lg">
+                                                <li class="cd-accordion__item">
+                                                    <a class="cd-accordion__label cd-accordion__label--icon-img"
+                                                        href="javascript: return false;" style="text-decoration: none;"
+                                                        id="start-bot">
+                                                        <span>Fai partire il bot</span>
+                                                    </a>
+                                                </li>
+                                                <li class="cd-accordion__item">
+                                                    <a class="cd-accordion__label cd-accordion__label--icon-img"
+                                                        href="javascript: return false;" style="text-decoration: none;"
+                                                        id="pause-bot">
+                                                        <span>Metti in pausa il bot</span>
+                                                    </a>
+                                                </li>
+                                                <li class="cd-accordion__item">
+                                                    <a class="cd-accordion__label cd-accordion__label--icon-img"
+                                                        href="javascript: return false;" style="text-decoration: none;"
+                                                        id="resume-bot">
+                                                        <span>Fai ripartire il bot</span>
+                                                    </a>
+                                                </li>
+                                                <li class="cd-accordion__item">
+                                                    <a class="cd-accordion__label cd-accordion__label--icon-img"
+                                                        href="javascript: return false;" style="text-decoration: none;"
+                                                        id="stop-bot">
+                                                        <span>Ferma il bot</span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                            <p>👉
+                                                <a href="https://gabriprinciott.altervista.org" class="cd-article-link"
+                                                    target="_blank"
+                                                    style="text-decoration: underline;color: rgba(0, 0, 0, 0.5);">By
+                                                    Gabriele Princiotta</a>
+                                            </p>
+                                        </section>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <div class="code-window"
+                                    style="background-image: linear-gradient(to right top, #4aadda, #00c5e0, #00d9bf, #09e77d, #a8eb12);">
+                                    <div class="dots">
+                                        <div class="red"></div>
+                                        <div class="orange"></div>
+                                        <div class="green"></div>
+                                    </div>
+                                    <div id="popup-the-spammer">
+                                        <section class="container max-width-sm">
+                                            <div class="text-component text-center">
+                                                <h1>The Spammer</h1>
+                                            </div>
+
+                                            <ul
+                                                class="cd-accordion cd-accordion--animated margin-top-lg margin-bottom-lg">
+                                                <li class="cd-accordion__item">
+                                                    <a class="cd-accordion__label cd-accordion__label--icon-img"
+                                                        href="javascript: return false;" style="text-decoration: none;"
+                                                        id="start-bot">
+                                                        <span>Apri Whatsapp Web</span>
+                                                    </a>
+                                                </li>
+                                                <li class="cd-accordion__item">
+                                                    <a class="cd-accordion__label cd-accordion__label--icon-img"
+                                                        href="javascript: return false;" style="text-decoration: none;"
+                                                        id="pause-bot">
+                                                        <span>Apri Telegram Web</span>
+                                                    </a>
+                                                </li>
+                                                <li class="cd-accordion__item">
+                                                    <a class="cd-accordion__label cd-accordion__label--icon-img"
+                                                        href="javascript: return false;" style="text-decoration: none;"
+                                                        id="resume-bot">
+                                                        <span>Apri Google Meet</span>
+                                                    </a>
+                                                </li>
+                                                <li class="cd-accordion__item">
+                                                    <a class="cd-accordion__label cd-accordion__label--icon-img"
+                                                        href="javascript: return false;" style="text-decoration: none;"
+                                                        id="stop-bot">
+                                                        <span>Apri Facebook Messenger</span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                            <p>👉
+                                                <a href="https://gabriprinciott.altervista.org" class="cd-article-link"
+                                                    target="_blank"
+                                                    style="text-decoration: underline;color: rgba(0, 0, 0, 0.5);">By
+                                                    Gabriele Princiotta</a>
+                                            </p>
+                                        </section>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <pre class="language-javascript">
+                                    <code class="language-javascript ">
+if (checkChatName()) {
+    if (isResume) {
+        spammerLog("Bot ripartito");
+        notifica("Bot ripartito");
+    } else {
+        spammerLog("Bot partito");
+        notifica("Bot partito");
+    }
+    theSpammer = setInterval(function() {
+        ohMyBot();
+    }, botTime);
+}
+                                    </code>
+                                </pre>
+                            </div>
                         </div>
-                        <!-- Conservo nel caso io voglia inserire un pezzo di codice -->
-                        <!--<pre class=" language-javascript line-numbers "><code class="language-javascript "></code></pre>-->
                     </div>
                 </div>
             </div>
@@ -112,7 +212,8 @@
         <div class="container ">
             <div class="row ">
                 <div class="col-md-8 mx-auto ">
-                    <h2 class="text-center text-md-left ">Ragioni per scaricare <span class="text-success ">TheSpammer</span></h2>
+                    <h2 class="text-center text-md-left ">Ragioni per scaricare <span
+                            class="text-success ">TheSpammer</span></h2>
                     <div class="row feature-grid ">
                         <div class="col-sm-6 ">
                             <div class="media ">
@@ -198,7 +299,10 @@
             <div class="row ">
                 <div class="col-md-8 mx-auto ">
                     <h2 class="text-center text-md-left ">Su quali siti funziona?</h2>
-                    <p class="lead text-muted">TheSpammer funziona su questi <strong>Whatsapp Web</strong>, <strong>Google Meet</strong>, <strong>Facebook Messenger</strong> e <strong>Telegram Web</strong></p>
+                    <p class="lead text-muted">TheSpammer funziona su questi <strong>Whatsapp Web</strong>,
+                        <strong>Google Meet</strong>, <strong>Facebook Messenger</strong> e <strong>Telegram
+                            Web</strong>
+                    </p>
                     <div class="mt-5 d-flex flex-row justify-content-md-between flex-wrap press-icons ">
                         <a href="https://web.whatsapp.com">
                             <img src="images/whatsapp.png" alt="Whatsapp Web" />
@@ -207,10 +311,17 @@
                             <img src="images/meet.png" alt="Google Meet" width=60 height=60 />
                         </a>
                         <a href="https://messenger.com">
-                            <img src="images/facebook.png" alt="Facebook Messenger" width=60 height=60 />
+                            <img src="images/messenger.png" alt="Facebook Messenger" width=60 height=60 />
                         </a>
                         <a href="hhttps://web.telegram.org">
                             <img src="images/telegram.png" alt="Telegram Web" />
+                        </a>
+                        <a href="https://instagram.com">
+                            <img src="images/instagram_coming_soon.png" alt="In arrivo su Instagram Web" width=60
+                                height=60 />
+                        </a>
+                        <a href="https://gmail.com">
+                            <img src="images/gmail_coming_soon.png" alt="In arrivo su Gmail" width=60 height=60 />
                         </a>
                     </div>
                 </div>
@@ -226,13 +337,16 @@
                     <h2 class="text-center text-md-left ">Scarica</h2>
                     <p class="lead text-muted">TheSpammer &egrave; disponibile per i browser pi&ugrave; diffusi</p>
                     <div class="mt-5 d-flex flex-row justify-content-md-between flex-wrap press-icons ">
-                        <a href="https://github.com/gabry2003/TheSpammer/raw/master/packages/TheSpammer.v2.0.chrome.zip">
+                        <a
+                            href="https://github.com/gabry2003/TheSpammer/raw/master/packages/TheSpammer.v2.0.chrome.zip">
                             <img src="images/chrome.jpg" alt="Google Chrome " width=65 height=60 />
                         </a>
-                        <a href="https://github.com/gabry2003/TheSpammer/raw/master/packages/TheSpammer.v2.0.firefox.xpi.zip">
+                        <a
+                            href="https://github.com/gabry2003/TheSpammer/raw/master/packages/TheSpammer.v2.0.firefox.xpi.zip">
                             <img src="images/mozilla.png" alt="Mozilla Firefox " />
                         </a>
-                        <a href="https://github.com/gabry2003/TheSpammer/raw/master/packages/TheSpammer.v2.0.opera.crx.zip">
+                        <a
+                            href="https://github.com/gabry2003/TheSpammer/raw/master/packages/TheSpammer.v2.0.opera.crx.zip">
                             <img src="images/opera.png" alt="Opera " />
                         </a>
                         <a href="https://github.com/gabry2003/TheSpammer/raw/master/packages/TheSpammer.v2.0.edge.zip">
@@ -250,13 +364,15 @@
             <div class="row ">
                 <div class="col-12 text-center ">
                     <ul class="list-inline ">
-                        <li class="list-inline-item "><a href="https://github.com/gabry2003/TheSpammer ">Fork TheSpammer on GitHub</a></li>
+                        <li class="list-inline-item "><a href="https://github.com/gabry2003/TheSpammer ">Fork TheSpammer
+                                on GitHub</a></li>
                     </ul>
                 </div>
             </div>
             <div class="row my-2 ">
                 <div class="col-md-4 mx-auto text-muted text-center small-xl ">
-                    Made with ❤️ by <a href="https://gabriprinciott.altervista.org " target="_blank ">Gabriele Princiotta</a><br>
+                    Made with ❤️ by <a href="https://gabriprinciott.altervista.org " target="_blank ">Gabriele
+                        Princiotta</a><br>
                     <a href="https://clearbit.com">Logos provided by Clearbit</a>
                 </div>
             </div>
@@ -267,7 +383,9 @@
     <script src="https://code.jquery.com/jquery-3.2.1.min.js "></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.7.3/feather.min.js "></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/prism.min.js "></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/plugins/line-numbers/prism-line-numbers.min.js "></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/plugins/line-numbers/prism-line-numbers.min.js "></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
     <script src="js/scripts.js "></script>
 </body>
 

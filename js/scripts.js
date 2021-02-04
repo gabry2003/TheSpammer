@@ -10,3 +10,14 @@ $('#vai-a-download').click(function(e) {
         scrollTop: $("#download").offset().top
     }, 2000);
 });
+
+const swiper = new Swiper('.swiper-container', {
+    pagination: {
+      el: '.swiper-pagination',
+      type: 'progressbar',
+    },
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+});
