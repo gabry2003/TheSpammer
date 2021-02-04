@@ -169,7 +169,7 @@ const sendMsgBot = (msg) => {
             inputEl.dispatchEvent(new Event('input', {
                 bubbles: true
             }));
-            buttonEl = document.querySelectorAll('span.XuQwKc')[0]; // Pulsante per inviare il messaggio
+            buttonEl = document.querySelectorAll(".uArJ5e.Y5FYJe.cjq2Db.IOMpW.Cs0vCd.M9Bg4d .XuQwKc")[0]; // Pulsante per inviare il messaggio
             try {
                 buttonEl.click(); // Clicco il pulsante per inviare il messaggio
             } catch (err) {

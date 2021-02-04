@@ -32,8 +32,9 @@
     {
       "matches": [
         "*://web.whatsapp.com/*",
-        "*://meet.google.com/",
-        "*://*.messenger.com/"
+        "*://web.telegram.org/*",
+        "*://meet.google.com/*",
+        "*://*.messenger.com/*"
       ],
       "css": [
         "styles/sweetalert2.min.css",
@@ -55,9 +56,9 @@
     "sessions",
     "storage",
     "tabs",
-    "*://code.jquery.com/*",
     "*://web.whatsapp.com/*",
-    "*://meet.google.com/",
-    "*://*.messenger.com/"
+    "*://web.telegram.org/*",
+    "*://meet.google.com/*",
+    "*://*.messenger.com/*"
   ]
 }

@@ -2,7 +2,7 @@
     "name": "TheSpammer",
     "short_name": "TheSpammer",
     "description": "Il bot per spammare messaggi",
-    "start_url": "/",
+    "start_url": "https://gabry2003.github.io/TheSpammer/",
     "background_color": "#64C9D5",
     "display": "fullscreen",
     "icons": [
