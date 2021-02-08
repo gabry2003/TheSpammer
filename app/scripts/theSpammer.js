@@ -5,6 +5,7 @@
  * @version 1.0
  */
 let messaggi; // Messaggi da inviare
+let stickerDaInviare; // Sticker da inviare
 let modalita = 0; // Modalita' invio messaggi
 let chatOrig; // Chat quando il bot e' partito
 let msgIndex = 0; // Contatore del messaggio che sto attualmente mandando
@@ -16,6 +17,7 @@ let lastTime = 0; // Ultimo tempo impostato
 let spammerOnline = false; // Se il bot e' attivo
 let partito = false; // Se il bot e' partito almeno una volta
 let inPausa = false; // Se il bot e' stato messo in pausa
+let tipoInvio = 0; // 0 - messaggi     1 - stickers     2 - immagini
 
 /**
  * Funzione per inviare una notifica toast con sweetalert
@@ -116,6 +118,43 @@ const checkChatName = (confronto = null) => {
     }
 };
 
+const visualizzaStickers = async(time = 3000) => {
+    let button = document.getElementsByClassName('_37evB _16P6V _3x5p4 _3guyl')[0];
+    button.click();
+
+    await new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve(true);
+        }, time);
+    });
+
+
+    let stickers = [];
+
+    try {
+        let images = document.getElementsByClassName('_1O6cA')[0].getElementsByClassName('_3Xjbn')[2].querySelectorAll('[tabindex="-1"]')[2].getElementsByTagName('img');
+        console.log('Immagini:');
+        console.log(images.length);
+
+        for (let i = 0; i < images.length; i++) {
+            stickers.push({
+                el: images[i],
+                url: images[i].src
+            });
+        }
+    } catch (e) {
+        console.error(e);
+    }
+
+    return stickers;
+};
+
+const sendStickerBot = async(index) => {
+    spammerLog(`Invio sticker: ${stickerDaInviare[index].url}`);
+    await visualizzaStickers();
+    stickerDaInviare[index].el.click();
+};
+
 /**
  * Funzione per inviare un messaggio
  * 
@@ -187,20 +226,40 @@ const sendMsgBot = (msg) => {
 const ohMyBot = () => {
     let chatAttuale = getChatName(); // Nome della chat attuale
     let msg; // Messaggio da inviare
-    if (chatAttuale !== "") spammerLog("Chat attuale: " + chatAttuale);
+    if (chatAttuale !== '') spammerLog(`Chat attuale: ${chatAttuale}`);
+
     if (checkChatName(chatOrig)) { // Se non ha cambiato chat ed e' aperta una chat oppure non siamo ne' su telegram web ne' su whatsapp web
         if (modalita == 1) { // Se devo mandarlo in modo casuale
             msgIndex = Math.round(Math.random() * (messaggi.length - 1)); // Genero un indice casuale come contatore
         }
-        msg = messaggi[msgIndex];
-        sendMsgBot(msg);
+
+        switch (tipoInvio) {
+            case 0:
+                msg = messaggi[msgIndex];
+                sendMsgBot(msg);
+                break;
+            case 1:
+                sendStickerBot(msgIndex);
+                break;
+            case 2:
+
+                break;
+        }
+
         if (modalita == 0) { // Se a giro devo inviarli tutti
-            if (msgIndex == (messaggi.length - 1)) { // Se sono alla fine dell'array
-                msgIndex = 0; // Ritorno al primo elemento
-            } else { // Altrimenti
-                msgIndex++; // Passo al messaggio successivo
+            switch (tipoInvio) {
+                case 0:
+                    msgIndex = (msgIndex + 1) % (messaggi.length - 1);
+                    break;
+                case 1:
+                    msgIndex = (msgIndex + 1) % (stickerDaInviare.length - 1);
+                    break;
+                case 2:
+
+                    break;
             }
         }
+
         if (limite !== null) { // Se e' stato impostato un limite
             msgCount++; // Incremento il contatore dei messaggi inviati
             if (msgCount == limite) { // Se sono al limite
@@ -310,13 +369,32 @@ const resumeBot = () => {
 /**
  * Funzione che apre una finestra di dialogo per fare partire il bot in modalita' grafica
  */
-const dialogBot = () => {
-    spammerLog(`Visualizzo l'alert per scegliere le opzioni e fare partire il bot`);
+const dialogBot = async() => {
+    let sceltaStickers = ``;
+
+    if (window.location.href.includes('https://web.whatsapp.com')) { // Se siamo su Whatsapp Web
+        let stick = await visualizzaStickers();
+        for (let i = 0; i < stick.length; i++) {
+            sceltaStickers += `<img src="${stick[i].url}" width=33 height=33>`;
+        }
+    }
+
     let span = document.createElement("span");
     span.innerHTML = "<div class=\"swal-form\"> \
-    <p style=\"color:#000;\">Messaggi da inviare, ogni riga un messaggio<br><br></p> \
-    <textarea id=\"spammerText\" class=\"nice-input swal-form-field\" style=\"width:100%;color:#000;\"></textarea> \
-    <label for=\"spammerText\"></label> \
+    <p style=\"color:#000;\">Tipo invio<br><br></p> \
+    <select id=\"tipoInvio\" class=\"nice-input swal-form-field\" style=\"color:#000;background-color:#fff;\" onchange=\"cambiaSceltaTipo(this.value);\"> \
+        <option value=0 selected style=\"color:#000;background-color:#fff;\">Messaggi testuali</option> \
+        <option value=1 style=\"color:#000;background-color:#fff;\">Stickers</option> \
+    </select> \
+    <div id=\"invio-msg\"> \
+        <p style=\"color:#000;\"><br>Messaggi da inviare, ogni riga un messaggio<br><br></p> \
+        <textarea id=\"spammerText\" class=\"nice-input swal-form-field\" style=\"width:100%;color:#000;\"></textarea> \
+        <label for=\"spammerText\"></label> \
+    </div> \
+    <div id=\"invio-sticker\"> \
+        <p style=\"color:#000;\"><br>Stickers da inviare<br><br></p> \
+        <div id=\"scelta-stickers\" style=\"max-height:500px; overflow-y: auto;\">" + sceltaStickers + "</div> \
+    </div> \
     <p style=\"color:#000;\"><br>Millisecondi da aspettare tra un messaggio e l'altro<br><br></p> \
     <input id=\"spammerTime\" class=\"nice-input swal-form-field\" type=\"number\" name=\"\" value=1000 style=\"width:100%;color:#000;\"> \
     <label for=\"spammerTime\"></label> \
@@ -331,11 +409,11 @@ const dialogBot = () => {
     <label for=\"spammerMod\"></label> \
 </div>";
     swal({
-        title: "Impostazioni bot",
+        title: 'TheSpammer',
         content: span,
         buttons: {
-            cancel: "Annulla",
-            confirm: "Spamma"
+            cancel: 'Annulla',
+            confirm: 'Spamma'
         },
         closeOnClickOutside: false,
         closeOnEsc: false,
@@ -345,7 +423,8 @@ const dialogBot = () => {
                     a: document.getElementById('spammerText').value,
                     b: document.getElementById('spammerTime').value,
                     c: document.getElementById('spammerLimite').value,
-                    d: document.getElementById('spammerMod').value
+                    d: document.getElementById('spammerMod').value,
+                    e: document.getElementById('tipoInvio').value,
                 });
             });
         }
@@ -356,6 +435,7 @@ const dialogBot = () => {
                 let spammerTime = document.getElementById('spammerTime').value;
                 let spammerLimite = document.getElementById('spammerLimite').value;
                 let spammerMod = document.getElementById('spammerMod').value;
+                tipoInvio = document.getElementById('tipoInvio').value;
                 if (spammerText !== "" && spammerTime > 0) { // Se ha inserito tutti i dati necessari
 
                     let continuare = true; // Se continuare la creazione del nuovo processo
