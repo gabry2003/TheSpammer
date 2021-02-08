@@ -3,7 +3,7 @@
 ### Chrome
 Ancora non disponibile nello store
 ### Firefox
-Ancora non disponibile nello store
+Disponibile nello store alla pagina: https://addons.mozilla.org/it/firefox/addon/thespammerbot/
 ### Edge
 Ancora non disponibile nello store
 ### Opera
