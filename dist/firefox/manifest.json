@@ -34,7 +34,8 @@
         "*://web.whatsapp.com/*",
         "*://web.telegram.org/*",
         "*://meet.google.com/*",
-        "*://*.messenger.com/*"
+        "*://*.messenger.com/*",
+        "*://*.instagram.com/*"
       ],
       "css": [
         "styles/sweetalert2.min.css",
@@ -59,6 +60,7 @@
     "*://web.whatsapp.com/*",
     "*://web.telegram.org/*",
     "*://meet.google.com/*",
+    "*://*.instagram.com/*",
     "*://*.messenger.com/*"
   ]
 }

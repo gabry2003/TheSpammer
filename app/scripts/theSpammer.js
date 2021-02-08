@@ -72,27 +72,25 @@ if (window.location.href.includes("https://web.whatsapp.com")) {
  */
 const getChatName = () => {
     let el;
-    if (window.location.href.includes("https://web.whatsapp.com")) { // Se siamo su Whatsapp Web
+    if (window.location.href.includes('web.whatsapp.com')) { // Se siamo su Whatsapp Web
         el = document.querySelectorAll('#main span._1hI5g._1XH7x._1VzZY')[0];
-    } else if (window.location.href.includes("https://web.telegram.org")) { // Se siamo su Telegram Web
+    } else if (window.location.href.includes('web.telegram.org')) { // Se siamo su Telegram Web
         el = document.querySelectorAll('span.tg_head_peer_title')[0];
-    } else if (window.location.href.includes("messenger.com")) { // Se siamo su Messenger
-        el = document.getElementsByClassName("_1jt6 _710_")[0].children[1];
-        return el.innerText;
-
-    } else if (window.location.href.includes("https://meet.google.com")) { // Se siamo su Meet
-
-        console.log("Su Meet non bisogna entrare in una chat!");
-        return "";
-
+    } else if (window.location.href.includes('messenger.com')) { // Se siamo su Messenger
+        el = document.getElementsByClassName('bafdgad4 tkr6xdv7')[0].getElementsByClassName('a8c37x1j ni8dbmo4 stjgntxs l9j0dhe7 ltmttdrg g0qnabr5')[0];
+    } else if (window.location.href.includes('meet.google.com')) { // Se siamo su Meet
+        console.log('Su Meet non bisogna entrare in una chat!');
+        return '';
+    } else if (window.location.href.includes('instagram.com/direct/')) {
+        el = document.getElementsByClassName('PjuAP')[0].getElementsByClassName('Igw0E IwRSH eGOV_ ybXk5 _4EzTm')[0];
     }
 
     // Se e' aperta una chat
     if (typeof(el) !== 'undefined' && el !== null) {
         return el.innerText;
     } else { // Altrimenti
-        console.log("el1 non trovato");
-        return ""; // Ritorno una stringa vuota
+        console.log('el1 non trovato');
+        return ''; // Ritorno una stringa vuota
     }
 };
 
@@ -102,9 +100,9 @@ const getChatName = () => {
  * @param {*} [confronto=null] 
  */
 const checkChatName = (confronto = null) => {
-    if (window.location.href.includes("https://web.whatsapp.com") || window.location.href.includes("https://web.telegram.org") || window.location.href.includes("messenger.com")) { // Se siamo su whatsapp web o telegram web o messenger
+    if (window.location.href.includes('web.whatsapp.com') || window.location.href.includes('web.telegram.org') || window.location.href.includes('messenger.com') || window.location.href.includes('instagram.com/direct/')) {
 
-        let cond = getChatName() !== ""; // La condizione iniziale e' che sia dentro una chat
+        let cond = getChatName() !== ''; // La condizione iniziale e' che sia dentro una chat
         if (confronto !== null) { // Se ha passato un valore da confrontare
 
             // Aggiungo che questo valore sia uguale alla chat attuale
@@ -129,63 +127,56 @@ const checkChatName = (confronto = null) => {
 const sendMsgBot = (msg) => {
     // Campo di input
     let inputEl;
-    if (window.location.href.includes("https://web.whatsapp.com")) { // Se siamo su Whatsapp Web
+    if (window.location.href.includes('https://web.whatsapp.com')) { // Se siamo su Whatsapp Web
         inputEl = document.querySelectorAll('#main ._1awRl.copyable-text.selectable-text')[0];
-    } else if (window.location.href.includes("https://web.telegram.org")) { // Se siamo su Telegram Web
-        inputEl = document.querySelectorAll(".composer_rich_textarea")[0];
-    } else if (window.location.href.includes("https://meet.google.com")) { // Se siamo su Meet
-        inputEl = document.querySelectorAll("textarea.KHxj8b.tL9Q4c")[0];
-    } else if (window.location.href.includes("messenger.com")) { // Se siamo su Messenger
-        inputEl = document.querySelectorAll("div.notranslate._5rpu [data-text=true]")[0];
+    } else if (window.location.href.includes('https://web.telegram.org')) { // Se siamo su Telegram Web
+        inputEl = document.querySelectorAll('.composer_rich_textarea')[0];
+    } else if (window.location.href.includes('https://meet.google.com')) { // Se siamo su Meet
+        inputEl = document.querySelectorAll('textarea.KHxj8b.tL9Q4c')[0];
+    } else if (window.location.href.includes('messenger.com')) { // Se siamo su Messenger
+        inputEl = document.querySelectorAll('div.notranslate._5rpu [data-text=true]')[0];
+    } else if (window.location.href.includes('instagram.com/direct/')) {
+        inputEl = document.getElementsByClassName('Igw0E IwRSH eGOV_ _4EzTm L-sTb HcJZg')[0].getElementsByTagName('textarea')[0];
     }
 
     if (typeof(inputEl) !== 'undefined' && inputEl !== null) { // Se esiste il campo di input
         let buttonEl;
-        if (window.location.href.includes("https://web.whatsapp.com")) { // Se siamo su Whatsapp Web
-            inputEl.innerHTML = msg; // Inserisco il messaggio nel campo di input
-            // Simulo il bubbling sul campo di input
-            inputEl.dispatchEvent(new Event('input', {
-                bubbles: true
-            }));
-            buttonEl = document.querySelectorAll('._3qpzV button._2Ujuu')[0]; // Pulsante per inviare il messaggio
-            try {
+        try {
+            if (window.location.href.includes('https://web.whatsapp.com')) { // Se siamo su Whatsapp Web
+                inputEl.innerHTML = msg; // Inserisco il messaggio nel campo di input
+                // Simulo il bubbling sul campo di input
+                inputEl.dispatchEvent(new Event('input', {
+                    bubbles: true
+                }));
+                buttonEl = document.querySelectorAll('._3qpzV button._2Ujuu')[0]; // Pulsante per inviare il messaggio
                 buttonEl.click(); // Clicco il pulsante per inviare il messaggio
-            } catch (err) {
-                console.error("Impossibile inviare il messaggio!");
-                console.error(err);
-            }
-        } else if (window.location.href.includes("https://web.telegram.org")) { // Se siamo su Telegram Web
-            inputEl.innerHTML = msg; // Inserisco il messaggio nel campo di input
-            buttonEl = document.getElementsByClassName("im_submit")[0];
-            try {
+            } else if (window.location.href.includes("https://web.telegram.org")) { // Se siamo su Telegram Web
+                inputEl.innerHTML = msg; // Inserisco il messaggio nel campo di input
+                buttonEl = document.getElementsByClassName("im_submit")[0];
                 buttonEl.dispatchEvent(new Event("mousedown"));
-            } catch (err) {
-                console.error("Impossibile inviare il messaggio!");
-                console.error(err);
-            }
-        } else if (window.location.href.includes("https://meet.google.com")) { // Se siamo su Meet
-            inputEl.value = msg; // Inserisco il messaggio nel campo di input
-            // Simulo il bubbling sul campo di input
-            inputEl.dispatchEvent(new Event('input', {
-                bubbles: true
-            }));
-            buttonEl = document.querySelectorAll(".uArJ5e.Y5FYJe.cjq2Db.IOMpW.Cs0vCd.M9Bg4d .XuQwKc")[0]; // Pulsante per inviare il messaggio
-            try {
+            } else if (window.location.href.includes("https://meet.google.com")) { // Se siamo su Meet
+                inputEl.value = msg; // Inserisco il messaggio nel campo di input
+                // Simulo il bubbling sul campo di input
+                inputEl.dispatchEvent(new Event('input', {
+                    bubbles: true
+                }));
+                buttonEl = document.querySelectorAll(".uArJ5e.Y5FYJe.cjq2Db.IOMpW.Cs0vCd.M9Bg4d .XuQwKc")[0]; // Pulsante per inviare il messaggio
+            } else if (window.location.href.includes("messenger.com")) { // Se siamo su Messenger
+                // Simulo l'inserimento del testo da tastiera
+                document.getElementsByClassName('rq0escxv datstx6m k4urcfbm a8c37x1j')[0].querySelectorAll('[data-text=true]')[0].dispatchEvent(new InputEvent('textInput', { data: msg, bubbles: true }));
+                buttonEl = document.querySelectorAll('[aria-label="Premi Invio per inviare"]')[0]; // Pulsante per inviare il messaggio
                 buttonEl.click(); // Clicco il pulsante per inviare il messaggio
-            } catch (err) {
-                console.error("Impossibile inviare il messaggio!");
-                console.error(err);
+            } else if (window.location.href.includes('instagram.com/direct/')) {
+                inputEl.value = msg; // Inserisco il messaggio nel campo di input
+                inputEl.dispatchEvent(new Event('input', {
+                    bubbles: true
+                }));
+                buttonEl = document.getElementsByClassName('Igw0E IwRSH eGOV_ _4EzTm L-sTb HcJZg')[0].getElementsByClassName('sqdOP yWX7d y3zKF')[0];
+                buttonEl.click();
             }
-        } else if (window.location.href.includes("messenger.com")) { // Se siamo su Messenger
-            // Simulo l'inserimento del testo da tastiera
-            document.querySelectorAll("div.notranslate._5rpu [data-text=true]")[0].dispatchEvent(new InputEvent('textInput', { data: msg, bubbles: true }));
-            buttonEl = document.querySelectorAll("a[aria-label=Invia]")[0]; // Pulsante per inviare il messaggio
-            try {
-                buttonEl.click(); // Clicco il pulsante per inviare il messaggio
-            } catch (err) {
-                console.error("Impossibile inviare il messaggio!");
-                console.error(err);
-            }
+        } catch (err) {
+            console.error('Impossibile inviare il messaggio!');
+            console.error(err);
         }
     }
 };
@@ -427,6 +418,10 @@ const dialogBot = () => {
     }, function() {
         spammerLog("Operazione annullata!");
     });
+
+    let styleElem = document.head.appendChild(document.createElement('style'));
+    styleElem.innerHTML = '.swal-overlay:before { height: 0% !important; }';
+
     return 0;
 };
 
