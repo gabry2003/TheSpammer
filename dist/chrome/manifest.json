@@ -60,6 +60,7 @@
     "privacy",
     "sessions",
     "storage",
+    "unlimitedStorage",
     "tabs",
     "*://web.whatsapp.com/*",
     "*://web.telegram.org/*",

@@ -7,7 +7,7 @@ if (chrome) {
 
 const getStorageData = key =>
     new Promise((resolve, reject) =>
-        bbrowser.storage.sync.get(key, result =>
+        bbrowser.storage.local.get(key, result =>
             bbrowser.runtime.lastError ?
             reject(Error(bbrowser.runtime.lastError.message)) :
             resolve(result)

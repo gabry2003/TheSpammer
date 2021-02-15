@@ -7,7 +7,7 @@ if (chrome) {
 
 const getStorageData = key =>
     new Promise((resolve, reject) =>
-        bbrowser.storage.sync.get(key, result =>
+        bbrowser.storage.local.get(key, result =>
             bbrowser.runtime.lastError ?
             reject(Error(bbrowser.runtime.lastError.message)) :
             resolve(result)
@@ -53,13 +53,18 @@ const renderURL = (url, id) => {
         document.getElementById('stop-bot').addEventListener('click', () => {
             bbrowser.tabs.sendMessage(id, { 'message': 'stopBot' });
         });
+
+        // Messaggi programmati
+        document.getElementById('apri-instagram').addEventListener('click', () => {
+            window.open('programmati.html', '_blank');
+        });
     } else { // Altrimenti, se e' su un'altra pagina
         // Cambio il testo
         document.getElementById('start-bot').innerHTML = '<img src="popup/images/whatsapp.png" width=33 height=33></img><span> &nbsp;Apri Whatsapp Web</span>';
         document.getElementById('pause-bot').innerHTML = '<img src="popup/images/telegram.png" width=33 height=33></img><span> &nbsp;Apri Telegram Web</span>';
         document.getElementById('resume-bot').innerHTML = '<img src="popup/images/meet.png" width=33 height=33></img><span> &nbsp;Apri Google Meet</span>';
         document.getElementById('stop-bot').innerHTML = '<img src="popup/images/messenger.png" width=33 height=33></img><span> &nbsp;Apri Facebook Messenger</span>';
-        document.getElementById('apri-instagram').parentElement.style.display = '';
+        document.getElementById('apri-instagram').innerHTML = '<img src="popup/images/instagram.png" width=33 height=33></img><span> &nbsp;Apri Instagram</span>';
 
         // Inserisco gli eventi
         document.getElementById('start-bot').addEventListener('click', () => {
@@ -74,11 +79,10 @@ const renderURL = (url, id) => {
         document.getElementById('stop-bot').addEventListener('click', () => {
             window.open('https://messenger.com', '_blank');
         });
+        document.getElementById('apri-instagram').addEventListener('click', () => {
+            window.open('https://www.instagram.com/direct/inbox/', '_blank');
+        });
     }
-
-    document.getElementById('apri-instagram').addEventListener('click', () => {
-        window.open('https://www.instagram.com/direct/inbox/', '_blank');
-    });
 }
 
 document.addEventListener('DOMContentLoaded', async() => {

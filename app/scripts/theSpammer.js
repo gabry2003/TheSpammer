@@ -19,6 +19,14 @@ let spammerOnline = false; // Se il bot e' attivo
 let partito = false; // Se il bot e' partito almeno una volta
 let inPausa = false; // Se il bot e' stato messo in pausa
 let tipoInvio; // 0 - messaggi     1 - stickers     2 - immagini
+let programmatoStart = false;
+
+let bbrowser;
+if (chrome) {
+    bbrowser = chrome;
+} else {
+    bbrowser = browser;
+}
 
 /**
  * Funzione per inviare una notifica toast con sweetalert
@@ -48,9 +56,9 @@ const notifica = (titolo, tipo = 'success') => {
 
 const getStorageData = key =>
     new Promise((resolve, reject) =>
-        chrome.storage.sync.get(key, result =>
-            chrome.runtime.lastError ?
-            reject(Error(chrome.runtime.lastError.message)) :
+        bbrowser.storage.local.get(key, result =>
+            bbrowser.runtime.lastError ?
+            reject(Error(bbrowser.runtime.lastError.message)) :
             resolve(result)
         )
     );
@@ -184,6 +192,64 @@ const sendStickerBot = async(index) => {
     }
 };
 
+const entraInChat = async(nomeChat) => {
+    spammerLog(`Entro nella chat: ${nomeChat}`);
+
+    try {
+        if (window.location.href.includes('https://web.whatsapp.com')) { // Se siamo su Whatsapp Web
+            let nuovaChat = document.querySelectorAll('[data-icon="chat"]')[0];
+            nuovaChat.click(); // Clicco il pulsante "Nuova chat"
+            await (async() => {
+                return new Promise(r => setTimeout(r, 1000))
+            })();
+            let inputEl = document.querySelectorAll('._2BQrC._1mHgA.copyable-area [contenteditable=true]')[0];
+            inputEl.innerHTML = nomeChat;
+            inputEl.dispatchEvent(new Event('focus', {
+                bubbles: true
+            }))
+            inputEl.dispatchEvent(new Event('input', {
+                bubbles: true
+            }));
+            await (async() => {
+                return new Promise(r => setTimeout(r, 1000))
+            })();
+
+            let listaContatti = document.getElementsByClassName('_3Xjbn _1RHZR')[0].getElementsByClassName('_1MZWu');
+            for (let i = 0; i < listaContatti.length; i++) {
+                try {
+                    let tmp = listaContatti[i].getElementsByClassName('_3dHYI')[0];
+                    if (tmp == null || typeof tmp == undefined) throw Exception('Contatto trovato!');
+                } catch (e) {
+                    let el = listaContatti[i].getElementsByClassName('_1hI5g _1XH7x _1VzZY')[0];
+                    triggerMouseEvent = (node, eventType) => {
+                        var clickEvent = document.createEvent('MouseEvents');
+                        clickEvent.initEvent(eventType, true, true);
+                        node.dispatchEvent(clickEvent);
+                    }
+                    triggerMouseEvent(el, 'mouseover');
+                    triggerMouseEvent(el, 'mousedown');
+                    triggerMouseEvent(el, 'mouseup');
+                    triggerMouseEvent(el, 'click');
+                    break;
+                }
+            }
+        } else if (window.location.href.includes('https://web.telegram.org')) { // Se siamo su Telegram Web
+
+        } else if (window.location.href.includes('https://meet.google.com')) { // Se siamo su Meet
+
+        } else if (window.location.href.includes('messenger.com')) { // Se siamo su Messenger
+
+        } else if (window.location.href.includes('instagram.com/direct/')) {
+
+        }
+
+        return true;
+    } catch (e) {
+        console.error(e);
+        return false;
+    }
+}
+
 /**
  * Funzione per inviare un messaggio
  * 
@@ -311,7 +377,7 @@ const ohMyBot = () => {
 /**
  * @description Variabile che contiene il bot, per poterlo dopo fermare
  */
-theSpammer = null;
+let theSpammer = null;
 /**
  * Funzione per far partire il bot
  * 
@@ -405,6 +471,43 @@ const resumeBot = () => {
     return 0;
 };
 
+// Funzione del bot per i messaggi programmati
+const botProgrammati = async() => {
+    if (!programmatoStart) {
+        try {
+            let msgProgrammati;
+            try {
+                msgProgrammati = (await getStorageData('msgProgrammati')).msgProgrammati;
+
+                if (msgProgrammati == undefined) throw Exception();
+            } catch (e) {
+                msgProgrammati = [];
+            }
+
+            for (let i = 0; i < msgProgrammati.length; i++) {
+                if (Date.now() >= Date.parse(msgProgrammati[i].orario)) { // Se devo inviare il messaggio
+                    stopBot();
+                    programmatoStart = true;
+                    const res = await entraInChat(msgProgrammati[i].nome);
+                    sendMsgBot(msgProgrammati[i].msg);
+                    msgProgrammati.splice(i, 1);
+                    programmatoStart = !res;
+                }
+            }
+
+            bbrowser.storage.local.set({
+                msgProgrammati: msgProgrammati
+            });
+        } catch (e) {
+            console.error(e);
+        }
+    }
+};
+
+let theSpammerProgrammati = setInterval(async() => {
+    await botProgrammati();
+}, 1000);
+
 /**
  * Funzione che apre una finestra di dialogo per fare partire il bot in modalita' grafica
  */
@@ -436,7 +539,30 @@ const dialogBot = async() => {
     </ul>
 </div>
 <div id="tab-0" style="display: none;">
-    <p>prova</p>
+    <p>Messaggio da inviare<br><br></p>
+    <div class="box-container">
+        <div class="box">
+            <textarea id="spammerTextProgrammato" style="width: 100%;"></textarea>
+            <span></span>
+        </div>
+    </div>
+    <label for="spammerTextProgrammato"></label>
+    <p><br>Nome contatto<br><br></p>
+    <div class="box-container">
+        <div class="box">
+            <input id="spammerNameProgrammato" type="text" />
+            <span></span>
+        </div>
+    </div>
+    <label for="spammerNameProgrammato"></label>
+    <p><br>Orario invio:<br><br></p>
+    <div class="box-container">
+        <div class="box">
+            <input id="spammerOrarioProgrammato" type="datetime-local" />
+            <span></span>
+        </div>
+    </div>
+    <label for="spammerOrarioProgrammato"></label>
 </div>
 <div id="tab-1">
     <p>Tipo invio<br><br></p>
@@ -444,7 +570,7 @@ const dialogBot = async() => {
         <option value="0" selected>Messaggi testuali</option>
         <option value="1">Stickers</option>
     </select>
-    <p><br>Modalita' invio<br><br></p>
+    <p><br>Modalità invio<br><br></p>
     <select id="spammerMod">
         <option value=0 selected>Invio di tutti i messaggi a giro</option>
         <option value=1>Scelta causale tra i messaggi</option>
@@ -487,7 +613,7 @@ const dialogBot = async() => {
         content: span,
         buttons: {
             cancel: 'Annulla',
-            confirm: 'Spamma'
+            confirm: 'Comincia'
         },
         closeOnClickOutside: false,
         closeOnEsc: true,
@@ -499,96 +625,137 @@ const dialogBot = async() => {
                     c: document.getElementById('spammerLimite').value,
                     d: document.getElementById('spammerMod').value,
                     e: document.getElementById('tipoInvio').value,
+                    f: document.getElementById('spammerTextProgrammato').value,
+                    g: document.getElementById('spammerNameProgrammato').value,
+                    h: document.getElementById('spammerOrarioProgrammato').value
                 });
             });
         }
-    }).then((isConfirm) => {
+    }).then(async(isConfirm) => {
         if (isConfirm) { // Se ha confermato l'inizio del bot
-            if (checkChatName()) { // Se e' in una chat ed e' su whatsapp web o telegram web (gli unici due dove ci sono le chat)
-                let spammerText = document.getElementById('spammerText').value;
-                let spammerTime = 1000 / document.getElementById('spammerTime').value;
-                let spammerLimite = document.getElementById('spammerLimite').value;
-                let spammerMod = document.getElementById('spammerMod').value;
-                tipoInvio = document.getElementById('tipoInvio').value;
+            let spammerText = document.getElementById('spammerText').value;
+            let spammerTime = 1000 / document.getElementById('spammerTime').value;
+            let spammerLimite = document.getElementById('spammerLimite').value;
+            let spammerMod = document.getElementById('spammerMod').value;
+            let spammerTextProgrammato = document.getElementById('spammerTextProgrammato').value;
+            let spammerNameProgrammato = document.getElementById('spammerNameProgrammato').value;
+            let spammerOrarioProgrammato = document.getElementById('spammerOrarioProgrammato').value;
+            let tipoInvio = document.getElementById('tipoInvio').value;
 
-                let cond;
-                let all = document.querySelectorAll('[id^="cb"]');
-                stickerDaInviare = [];
-
-                for (var i = 0; i < all.length; i++) {
-                    if (all[i].checked) {
-                        stickerDaInviare.push(all[i].parentElement.getElementsByTagName('img')[0].src);
-                    }
-                }
-
-                switch (tipoInvio) {
-                    case '0':
-                        cond = spammerText !== "" && spammerTime > 0;
-                        break;
-                    case '1':
-                        cond = stickerDaInviare.length > 0;
-                        break;
-                    default:
-                        cond = true;
-                        break;
-                }
-
-                if (cond) { // Se ha inserito tutti i dati necessari
-                    if (spammerOnline) { // Se il bot e' in esecuzione
-                        stopBot(); // Fermo quello attivo in questo momento
-                    }
-                    // Faccio partire il bot
-                    let lim;
-                    if (spammerLimite == 0) { // Se non ha inserito un limite
-                        lim = null; // Assegno null
-                    } else { // Altrimenti
-                        lim = spammerLimite; // Assegno il limite inserito dall'utente
-                    }
-                    tmp = [];
-                    if (spammerText.includes("\n")) { // Se ci sono piu' frasi
-                        tmp = spammerText.split("\n");
-                    } else { // Altrimenti
-                        tmp[0] = spammerText;
+            if (spammerTextProgrammato != '') { // Se vuole programmare un messaggio
+                if (spammerTextProgrammato != '' && spammerNameProgrammato != '' && spammerOrarioProgrammato != '') {
+                    let msgProgrammati;
+                    try {
+                        msgProgrammati = (await getStorageData('msgProgrammati')).msgProgrammati;
+                        if (typeof msgProgrammati == undefined) throw new Exception();
+                    } catch (e) {
+                        msgProgrammati = [];
+                        console.error(e);
                     }
 
-                    startBot(spammerMod, spammerTime, '', tmp, lim);
+                    msgProgrammati.push({
+                        nome: spammerNameProgrammato,
+                        msg: spammerTextProgrammato,
+                        orario: spammerOrarioProgrammato
+                    });
 
-                } else { // Altrimenti
-
+                    bbrowser.storage.local.set({
+                        msgProgrammati: msgProgrammati
+                    }, function() {
+                        console.log('Aggiunto messaggio programmato alla lista');
+                        notifica('Messaggio programmato!');
+                    });
+                } else {
                     swal({
-                        title: "Errore",
-                        text: "Inserisci i dati necessari per fare partire il bot!",
-                        icon: "error",
+                        title: 'Errore',
+                        text: 'Entra in una chat per fare partire il bot!',
+                        icon: 'error',
                         buttons: {
-                            confirm: "Chiudi"
+                            confirm: 'Chiudi',
                         },
                         closeOnClickOutside: true,
                         closeOnEsc: true,
                         dangerMode: true
                     });
-
                 }
             } else { // Altrimenti
+                if (checkChatName()) {
+                    let cond;
+                    let all = document.querySelectorAll('[id^="cb"]');
+                    stickerDaInviare = [];
 
-                swal({
-                    title: "Errore",
-                    text: "Entra in una chat per fare partire il bot!",
-                    icon: "error",
-                    buttons: {
-                        confirm: "Chiudi",
+                    for (var i = 0; i < all.length; i++) {
+                        if (all[i].checked) {
+                            stickerDaInviare.push(all[i].parentElement.getElementsByTagName('img')[0].src);
+                        }
+                    }
 
-                    },
-                    closeOnClickOutside: true,
-                    closeOnEsc: true,
-                    dangerMode: true
-                });
+                    switch (tipoInvio) {
+                        case '0':
+                            cond = spammerText !== '' && spammerTime > 0;
+                            break;
+                        case '1':
+                            cond = stickerDaInviare.length > 0;
+                            break;
+                        default:
+                            cond = true;
+                            break;
+                    }
 
+                    if (cond) { // Se ha inserito tutti i dati necessari
+                        if (spammerOnline) { // Se il bot e' in esecuzione
+                            stopBot(); // Fermo quello attivo in questo momento
+                        }
+                        // Faccio partire il bot
+                        let lim;
+                        if (spammerLimite == 0) { // Se non ha inserito un limite
+                            lim = null; // Assegno null
+                        } else { // Altrimenti
+                            lim = spammerLimite; // Assegno il limite inserito dall'utente
+                        }
+                        tmp = [];
+                        if (spammerText.includes("\n")) { // Se ci sono piu' frasi
+                            tmp = spammerText.split("\n");
+                        } else { // Altrimenti
+                            tmp[0] = spammerText;
+                        }
+
+                        startBot(spammerMod, spammerTime, '', tmp, lim);
+
+                    } else { // Altrimenti
+
+                        swal({
+                            title: 'Errore',
+                            text: 'Inserisci i dati necessari per fare partire il bot!',
+                            icon: 'error',
+                            buttons: {
+                                confirm: 'Chiudi'
+                            },
+                            closeOnClickOutside: true,
+                            closeOnEsc: true,
+                            dangerMode: true
+                        });
+
+                    }
+                } else {
+                    swal({
+                        title: 'Errore',
+                        text: 'Entra in una chat per fare partire il bot!',
+                        icon: 'error',
+                        buttons: {
+                            confirm: 'Chiudi',
+                        },
+                        closeOnClickOutside: true,
+                        closeOnEsc: true,
+                        dangerMode: true
+                    });
+                }
             }
         } else { // Altrimenti
-            spammerLog("Operazione annllata!");
+            spammerLog('Operazione annllata!');
         }
     }, function() {
-        spammerLog("Operazione annullata!");
+        spammerLog('Operazione annullata!');
     });
 
     try {
@@ -834,13 +1001,6 @@ $focusColor:#EF9F00;
 };
 
 spammerLog('TheSpammer caricato');
-
-let bbrowser;
-if (chrome) {
-    bbrowser = chrome;
-} else {
-    bbrowser = browser;
-}
 
 bbrowser.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     switch (request.message) {

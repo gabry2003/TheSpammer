@@ -8,7 +8,7 @@ if (chrome) {
 bbrowser.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     switch (message.method) {
         case 'setTheme':
-            bbrowser.storage.sync.set({
+            bbrowser.storage.local.set({
                 'temaScuro': message.value
             }, function() {
                 console.log(`SET temaScuro=${message.value}`);
