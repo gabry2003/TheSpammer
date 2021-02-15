@@ -44,7 +44,7 @@
       "css": [
         "styles/sweetalert2.min.css",
         "styles/bootstrap.min.css",
-        "styles/customSweet.css"
+        "styles/tabStyle.css"
       ],
       "js": [
         "scripts/jquery.min.js",

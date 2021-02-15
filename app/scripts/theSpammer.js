@@ -299,7 +299,7 @@ const ohMyBot = () => {
             }
         }
 
-        if (limite !== null) { // Se e' stato impostato un limite
+        if (limite !== null && typeof limite !== undefined) { // Se e' stato impostato un limite
             msgCount++; // Incremento il contatore dei messaggi inviati
             if (msgCount == limite) { // Se sono al limite
                 stopBot(); // Stoppo il bot
@@ -409,8 +409,36 @@ const resumeBot = () => {
  * Funzione che apre una finestra di dialogo per fare partire il bot in modalita' grafica
  */
 const dialogBot = async() => {
-    let span = document.createElement("span");
-    span.innerHTML = `<div class="swal-form">
+    let temaScuro; // Se e' attivo o no il tema scuro
+    let coloreSelect = '#78cbf2'; // Colore dei select
+    let tabClass; // Classe dei tab
+
+    try {
+        temaScuro = (await getStorageData('temaScuro')).temaScuro;
+    } catch (e) {
+        console.error(e);
+        temaScuro = true;
+    }
+
+    let span = document.createElement('span');
+
+    if (temaScuro) {
+        tabClass = 'skin-alizarin';
+    } else {
+        tabClass = 'skin-peter-river';
+    }
+
+    span.innerHTML = `
+<div class="tabbed round ${tabClass}">
+    <ul>
+        <li>⏰</li>
+        <li class="active">📝</li>
+    </ul>
+</div>
+<div id="tab-0" style="display: none;">
+    <p>prova</p>
+</div>
+<div id="tab-1">
     <p>Tipo invio<br><br></p>
     <select id="tipoInvio">
         <option value="0" selected>Messaggi testuali</option>
@@ -426,7 +454,7 @@ const dialogBot = async() => {
         <p><br>Messaggi da inviare, ogni riga un messaggio<br><br></p>
         <div class="box-container">
             <div class="box">
-                <textarea id="spammerText" stzle="width: 100%;"></textarea>
+                <textarea id="spammerText" style="width: 100%;"></textarea>
                 <span></span>
             </div>
         </div>
@@ -436,10 +464,10 @@ const dialogBot = async() => {
         <p><br>Stickers da inviare<br><br></p>
         <div id="scelta-stickers" style="max-height:300px; overflow-y: auto;"></div>
     </div>
-    <p><br>Millisecondi da aspettare tra un messaggio e l'altro<br><br></p>
+    <p><br>Messaggi al secondo<br><br></p>
     <div class="box-container">
         <div class="box">
-            <input id="spammerTime" type="number" name="" value=1000>
+            <input id="spammerTime" type="number" name="" value=1>
             <span></span>
         </div>
     </div>
@@ -447,12 +475,13 @@ const dialogBot = async() => {
     <p><br>Limite messaggi<br><br></p>
     <div class="box-container">
         <div class="box">
-            <input id="spammerLimite" type="number" name="" value=1000>
+            <input id="spammerLimite" type="number" name="">
             <span></span>
         </div>
     </div>
     <label for="spammerLimite"></label>
-</div>`;
+</div>
+`;
     swal({
         title: 'The Spammer',
         content: span,
@@ -477,7 +506,7 @@ const dialogBot = async() => {
         if (isConfirm) { // Se ha confermato l'inizio del bot
             if (checkChatName()) { // Se e' in una chat ed e' su whatsapp web o telegram web (gli unici due dove ci sono le chat)
                 let spammerText = document.getElementById('spammerText').value;
-                let spammerTime = document.getElementById('spammerTime').value;
+                let spammerTime = 1000 / document.getElementById('spammerTime').value;
                 let spammerLimite = document.getElementById('spammerLimite').value;
                 let spammerMod = document.getElementById('spammerMod').value;
                 tipoInvio = document.getElementById('tipoInvio').value;
@@ -522,7 +551,7 @@ const dialogBot = async() => {
                         tmp[0] = spammerText;
                     }
 
-                    startBot(spammerMod, spammerTime, "", tmp, lim);
+                    startBot(spammerMod, spammerTime, '', tmp, lim);
 
                 } else { // Altrimenti
 
@@ -566,15 +595,6 @@ const dialogBot = async() => {
         document.getElementById('thespammer-alert').remove();
     } catch (e) {
         console.error(e);
-    }
-
-    let temaScuro;
-    let coloreSelect = '#78cbf2';
-    try {
-        temaScuro = (await getStorageData('temaScuro')).temaScuro;
-    } catch (e) {
-        console.error(e);
-        temaScuro = true;
     }
 
     let styleElem = document.head.appendChild(document.createElement('style'));
@@ -767,6 +787,7 @@ $focusColor:#EF9F00;
   }
 }
 `;
+
     document.getElementById('tipoInvio').addEventListener('change', async(event) => {
         switch (document.getElementById('tipoInvio').value) {
             case '0':
@@ -795,10 +816,24 @@ $focusColor:#EF9F00;
         }
     });
 
+    let all = document.getElementsByClassName('tabbed')[0].getElementsByTagName('li');
+    for (let i = 0; i < all.length; i++) {
+        all[i].addEventListener('click', function() {
+            all[i].className = 'active';
+            document.getElementById(`tab-${i}`).style.display = 'block';
+            for (let j = 0; j < all.length; j++) {
+                if (all[j].innerText != all[i].innerText) {
+                    all[j].className = '';
+                    document.getElementById(`tab-${j}`).style.display = 'none';
+                }
+            }
+        });
+    }
+
     return 0;
 };
 
-spammerLog("theSpammer caricato");
+spammerLog('TheSpammer caricato');
 
 let bbrowser;
 if (chrome) {
