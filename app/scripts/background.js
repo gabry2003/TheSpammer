@@ -1,7 +1,18 @@
-browser.runtime.onInstalled.addListener((details) => {
-    console.log('previousVersion', details.previousVersion)
-});
+let bbrowser;
+if (chrome) {
+    bbrowser = chrome;
+} else {
+    bbrowser = browser;
+}
 
-/*browser.browserAction.setBadgeText({
-  text: `@gabriprinciott`
-})*/
+bbrowser.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+    switch (message.method) {
+        case 'setTheme':
+            bbrowser.storage.sync.set({
+                'temaScuro': message.value
+            }, function() {
+                console.log(`SET temaScuro=${message.value}`);
+            });
+            break;
+    }
+});

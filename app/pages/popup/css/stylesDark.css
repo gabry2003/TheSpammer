@@ -1,0 +1,9 @@
+body {
+    background-color: #000 !important;
+}
+
+h1,
+p,
+.cd-article-link {
+    color: #fff !important;
+}

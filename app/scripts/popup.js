@@ -5,9 +5,14 @@ if (chrome) {
     bbrowser = browser;
 }
 
-/*bbrowser.tabs.insertCSS({
-    file: '/assets/css/font.css'
-});*/
+const getStorageData = key =>
+    new Promise((resolve, reject) =>
+        bbrowser.storage.sync.get(key, result =>
+            bbrowser.runtime.lastError ?
+            reject(Error(bbrowser.runtime.lastError.message)) :
+            resolve(result)
+        )
+    );
 
 const getCurrentTabUrl = (callback) => {
     bbrowser.tabs.query({
@@ -76,7 +81,15 @@ const renderURL = (url, id) => {
     });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async() => {
+    try {
+        if ((await getStorageData('temaScuro')).temaScuro) {
+            document.getElementById('style').setAttribute('href', 'popup/css/stylesDark.css');
+        }
+    } catch (e) {
+        console.error(e);
+    }
+
     getCurrentTabUrl((url, id) => {
         renderURL(url, id);
     });

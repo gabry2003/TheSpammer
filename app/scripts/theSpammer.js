@@ -46,6 +46,15 @@ const notifica = (titolo, tipo = 'success') => {
     return 0;
 }
 
+const getStorageData = key =>
+    new Promise((resolve, reject) =>
+        chrome.storage.sync.get(key, result =>
+            chrome.runtime.lastError ?
+            reject(Error(chrome.runtime.lastError.message)) :
+            resolve(result)
+        )
+    );
+
 /**
  * Funzione per effettuare un log piu' bello esteticamente
  * 
@@ -400,20 +409,6 @@ const resumeBot = () => {
  * Funzione che apre una finestra di dialogo per fare partire il bot in modalita' grafica
  */
 const dialogBot = async() => {
-    let sceltaStickers = `<ul>`;
-
-    if (window.location.href.includes('https://web.whatsapp.com')) { // Se siamo su Whatsapp Web
-        let stick = await visualizzaStickers();
-        for (let i = 0; i < stick.length; i++) {
-            sceltaStickers += `<li>
-    <input type="checkbox" id="cb${i}" />
-    <label for="cb${i}" id="img-label"><img src="${stick[i].url}" width=100 height=100 /></label>
-</li>`;
-        }
-    }
-
-    sceltaStickers += `</ul>`;
-
     let span = document.createElement("span");
     span.innerHTML = `<div class="swal-form">
     <p>Tipo invio<br><br></p>
@@ -437,9 +432,9 @@ const dialogBot = async() => {
         </div>
         <label for="spammerText"></label>
     </div>
-    <div id="invio-sticker">
+    <div id="invio-sticker" style="display: none;">
         <p><br>Stickers da inviare<br><br></p>
-        <div id="scelta-stickers" style="max-height:300px; overflow-y: auto;">${sceltaStickers}</div>
+        <div id="scelta-stickers" style="max-height:300px; overflow-y: auto;"></div>
     </div>
     <p><br>Millisecondi da aspettare tra un messaggio e l'altro<br><br></p>
     <div class="box-container">
@@ -465,7 +460,7 @@ const dialogBot = async() => {
             cancel: 'Annulla',
             confirm: 'Spamma'
         },
-        closeOnClickOutside: true,
+        closeOnClickOutside: false,
         closeOnEsc: true,
         preConfirm: () => {
             return new Promise((resolve, reject) => {
@@ -573,19 +568,33 @@ const dialogBot = async() => {
         console.error(e);
     }
 
+    let temaScuro;
+    let coloreSelect = '#78cbf2';
+    try {
+        temaScuro = (await getStorageData('temaScuro')).temaScuro;
+    } catch (e) {
+        console.error(e);
+        temaScuro = true;
+    }
+
     let styleElem = document.head.appendChild(document.createElement('style'));
     styleElem.id = 'thespammer-alert'
-    styleElem.innerHTML = `@import url('https://fonts.googleapis.com/css?family=Poppins');
+    styleElem.innerHTML = `@import url('https://fonts.googleapis.com/css?family=Poppins');`;
+    if (temaScuro) {
+        styleElem.innerHTML += `.swal-modal, .swal-icon--success:before, .swal-icon--success:after, .swal-icon--success:before, .swal-icon--success__hide-corners,
+        .swal-icon--error:before, .swal-icon--error:after, .swal-icon--error:before, .swal-icon--error__hide-corners,
+        .swal-icon--warning:before, .swal-icon--warning:after, .swal-icon--warning:before, .swal-icon--warning__hide-corners {
+            background-color: #000000;
+        }
+        .swal-content p, .swal-title, .swal-text {
+            color: #fff;
+        }`;
+
+        coloreSelect = '#c0392b';
+    }
+    styleElem.innerHTML += `
 .swal-overlay:before {
     height: 0% !important;
-}
-.swal-modal, .swal-icon--success:before, .swal-icon--success:after, .swal-icon--success:before, .swal-icon--success__hide-corners,
-.swal-icon--error:before, .swal-icon--error:after, .swal-icon--error:before, .swal-icon--error__hide-corners,
-.swal-icon--warning:before, .swal-icon--warning:after, .swal-icon--warning:before, .swal-icon--warning__hide-corners {
-    background-color: #000000;
-}
-.swal-content p, .swal-title, .swal-text {
-    color: #fff;
 }
 .swal-content *, .swal-title {
     font-family: "Poppins" !important;
@@ -598,9 +607,9 @@ const dialogBot = async() => {
     font-weight: bold;
     cursor: pointer;
     border-radius: 0;
-    background-color: #c0392b;
+    background-color: ${coloreSelect};
     border: none;
-    border-bottom: 2px solid #962d22;
+    border-bottom: 2px solid ${coloreSelect};
     color: white;
     padding: 10px;
     appearance: none;
@@ -757,8 +766,34 @@ $focusColor:#EF9F00;
     }
   }
 }
-
 `;
+    document.getElementById('tipoInvio').addEventListener('change', async(event) => {
+        switch (document.getElementById('tipoInvio').value) {
+            case '0':
+                document.getElementById('invio-sticker').style.display = 'none';
+                document.getElementById('invio-msg').style.display = 'block';
+                break;
+            case '1':
+                let sceltaStickers = `<ul>`;
+
+                if (window.location.href.includes('https://web.whatsapp.com')) { // Se siamo su Whatsapp Web
+                    let stick = await visualizzaStickers();
+                    for (let i = 0; i < stick.length; i++) {
+                        sceltaStickers += `<li>
+            <input type="checkbox" id="cb${i}" />
+            <label for="cb${i}" id="img-label"><img src="${stick[i].url}" width=100 height=100 /></label>
+        </li>`;
+                    }
+                }
+
+                sceltaStickers += `</ul>`;
+
+                document.getElementById('scelta-stickers').innerHTML = sceltaStickers;
+                document.getElementById('invio-sticker').style.display = 'block';
+                document.getElementById('invio-msg').style.display = 'none';
+                break;
+        }
+    });
 
     return 0;
 };

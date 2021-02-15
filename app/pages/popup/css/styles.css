@@ -1,5 +1,4 @@
-@import url("https://fonts.googleapis.com/css?family=Neucha|Cabin+Sketch&display=swap");
-@import url("https://fonts.googleapis.com/css?family=Jaldi:400,700");
+@import url('https://fonts.googleapis.com/css?family=Poppins');
 *,
 *::after,
 *::before {
@@ -3691,17 +3690,12 @@ h1 {
 }
 
 * {
-    font-family: "Cabin Sketch", cursive;
+    font-family: "Poppins";
 }
 
 .cd-accordion__item,
 .cd-article-link {
     font-weight: 800;
-}
-
-body {
-    /*background-color: #4AADDF !important;*/
-    background-image: linear-gradient(to right top, #4aadda, #00c5e0, #00d9bf, #09e77d, #a8eb12);
 }
 
 .cd-accordion__label.cd-accordion__label--icon-img span {

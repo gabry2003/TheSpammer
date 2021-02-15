@@ -16,6 +16,10 @@
         "scripts": ["scripts/background.js"],
         "persistent": false
     },
+    "options_ui": {
+        "page": "pages/options.html",
+        "open_in_tab": false
+    },
     "browser_action": {
         "default_icon": {
             "19": "images/icon.png",
@@ -57,6 +61,7 @@
         "*://web.telegram.org/*",
         "*://meet.google.com/*",
         "*://*.instagram.com/*",
-        "*://*.messenger.com/*"
+        "*://*.messenger.com/*",
+        "*://cdn.jsdelivr.net/*"
     ]
 }
