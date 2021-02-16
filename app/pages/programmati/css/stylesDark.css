@@ -1,4 +1,5 @@
-body {
+body,
+.container-table100 {
     background-color: #000 !important;
 }
 

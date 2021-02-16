@@ -1,28 +1,67 @@
-<!doctype html>
-<html lang="it" class="js">
+<!DOCTYPE html>
+<html lang="it">
 
 <head>
+    <title>TheSpammer</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="popup/css/styles.css">
+    <!--========================================================== =====================================-->
+    <link rel="icon" type="image/png" href="../images/icon.png" />
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="programmati/vendor/bootstrap/css/bootstrap.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="programmati/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="programmati/vendor/animate/animate.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="programmati/vendor/select2/select2.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="programmati/vendor/perfect-scrollbar/perfect-scrollbar.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="programmati/css/util.css">
+    <link rel="stylesheet" type="text/css" href="programmati/css/main.css">
     <link rel="stylesheet" id="style" href="programmati/css/stylesLight.css">
-    <title>The Spammer</title>
+    <!--===============================================================================================-->
 </head>
 
-<body style="padding: 3em 0;">
-    <section class="container max-width-sm">
-        <div class="text-component text-center">
-            <h2>Messaggi programmati</h2>
-        </div>
+<body>
 
-        <ul class="cd-accordion cd-accordion--animated margin-top-lg margin-bottom-lg" id="elenco-messaggi">
-            <!-- qui ci sono tutti i messaggi programmati -->
-        </ul>
-        <p>👉 <a href="https://gabriprinciott.altervista.org" class="cd-article-link" target="_blank">By Gabriele Princiotta</a></p>
-    </section>
-    <script src="popup/js/util.js"></script>
-    <script src="popup/js/main.js"></script>
+    <div class="limiter">
+        <div class="container-table100">
+            <div class="wrap-table100">
+                <div class="table100 ver1 m-b-110" id="tabella">
+                    <div class="table100-head">
+                        <table>
+                            <thead>
+                                <tr class="row100 head">
+                                    <th class="cell100 column1">Messaggio</th>
+                                    <th class="cell100 column2">Contatto</th>
+                                    <th class="cell100 column3">Orario</th>
+                                    <th class="cell100 column4"><button class="btn btn-danger" id="elimina-tutti"><i class="fa fa-trash"></i> All</button></th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+
+                    <div class="table100-body js-pscroll">
+                        <table>
+                            <tbody id="elenco-messaggi">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--===============================================================================================-->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/1.5.0/perfect-scrollbar.min.js" integrity="sha512-yUNtg0k40IvRQNR20bJ4oH6QeQ/mgs9Lsa6V+3qxTj58u2r+JiAYOhOW0o+ijuMmqCtCEg7LZRA+T4t84/ayVA==" crossorigin="anonymous"></script>
+    <script src="../scripts/mainProgrammati.js"></script>
     <script src="../scripts/programmati.js"></script>
+
 </body>
 
 </html>
