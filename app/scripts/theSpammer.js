@@ -640,7 +640,7 @@ const dialogBot = async() => {
             let spammerTextProgrammato = document.getElementById('spammerTextProgrammato').value;
             let spammerNameProgrammato = document.getElementById('spammerNameProgrammato').value;
             let spammerOrarioProgrammato = document.getElementById('spammerOrarioProgrammato').value;
-            let tipoInvio = document.getElementById('tipoInvio').value;
+            tipoInvio = document.getElementById('tipoInvio').value;
 
             if (spammerTextProgrammato != '') { // Se vuole programmare un messaggio
                 if (spammerTextProgrammato != '' && spammerNameProgrammato != '' && spammerOrarioProgrammato != '') {
@@ -962,9 +962,11 @@ $focusColor:#EF9F00;
                 document.getElementById('invio-msg').style.display = 'block';
                 break;
             case '1':
+                document.getElementById('invio-sticker').style.display = 'block';
                 let sceltaStickers = `<ul>`;
 
                 if (window.location.href.includes('https://web.whatsapp.com')) { // Se siamo su Whatsapp Web
+                    document.getElementById('scelta-stickers').innerHTML = `<img src="https://lh3.googleusercontent.com/proxy/WDpRdT-QyoFux7dbLQ5fKN9MlwuH31PC6Eiq0zR_r1Eh9ZPpaPeCPBpvxDB2g82SABzADlWdfh59BrVVu7ufiOK_A4QQHQu7Ir8aI7PJGpXYyoRJHOPn5_GNYS06GYUgHuGEEF6cySebzSPPO7ec62OO9hLhHA" width=50 height=50 style="text-align:center;">`
                     let stick = await visualizzaStickers();
                     for (let i = 0; i < stick.length; i++) {
                         sceltaStickers += `<li>
@@ -977,7 +979,6 @@ $focusColor:#EF9F00;
                 sceltaStickers += `</ul>`;
 
                 document.getElementById('scelta-stickers').innerHTML = sceltaStickers;
-                document.getElementById('invio-sticker').style.display = 'block';
                 document.getElementById('invio-msg').style.display = 'none';
                 break;
         }
