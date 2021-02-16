@@ -97,7 +97,8 @@ document.addEventListener('DOMContentLoaded', async() => {
     <td class="cell100 column1" contenteditable="true" id="msg-${i}">${msgProgrammati[i].msg}</td>
     <td class="cell100 column2" contenteditable="true" id="nome-${i}">${msgProgrammati[i].nome}</td>
     <td class="cell100 column3" contenteditable="true" id="orario-${i}">${orario}</td>
-    <td class="cell100 column4">
+    <td class="cell100 column4" id="orario-${i}">${msgProgrammati[i].piattaforma}</td>
+    <td class="cell100 column5">
         <button class="btn btn-danger" id="elimina-${i}">
             <i class="fa fa-trash"></i>
         </button>

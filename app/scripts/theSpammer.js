@@ -87,22 +87,39 @@ if (window.location.href.includes("https://web.whatsapp.com")) {
     spammerLog("Siamo su Facebook Messenger");
 }
 
+const piattaformaAttuale = () => {
+    if (window.location.href.includes('web.whatsapp.com')) { // Se siamo su Whatsapp Web
+        return 'Whatsapp'
+    } else if (window.location.href.includes('web.telegram.org')) { // Se siamo su Telegram Web
+        return 'Telegram';
+    } else if (window.location.href.includes('messenger.com')) { // Se siamo su Messenger
+        return 'Messenger';
+    } else if (window.location.href.includes('meet.google.com')) { // Se siamo su Meet
+        return 'Meet';
+    } else if (window.location.href.includes('instagram.com/direct/')) {
+        return 'Instagram';
+    }
+};
 /**
  * Ritorna il nome della chat attuale
  */
 const getChatName = () => {
     let el;
-    if (window.location.href.includes('web.whatsapp.com')) { // Se siamo su Whatsapp Web
-        el = document.querySelectorAll('#main span._1hI5g._1XH7x._1VzZY')[0];
-    } else if (window.location.href.includes('web.telegram.org')) { // Se siamo su Telegram Web
-        el = document.querySelectorAll('span.tg_head_peer_title')[0];
-    } else if (window.location.href.includes('messenger.com')) { // Se siamo su Messenger
-        el = document.getElementsByClassName('bafdgad4 tkr6xdv7')[0].getElementsByClassName('a8c37x1j ni8dbmo4 stjgntxs l9j0dhe7 ltmttdrg g0qnabr5')[0];
-    } else if (window.location.href.includes('meet.google.com')) { // Se siamo su Meet
-        console.log('Su Meet non bisogna entrare in una chat!');
-        return '';
-    } else if (window.location.href.includes('instagram.com/direct/')) {
-        el = document.getElementsByClassName('PjuAP')[0].getElementsByClassName('Igw0E IwRSH eGOV_ ybXk5 _4EzTm')[0];
+    try {
+        if (window.location.href.includes('web.whatsapp.com')) { // Se siamo su Whatsapp Web
+            el = document.querySelectorAll('#main span._1hI5g._1XH7x._1VzZY')[0];
+        } else if (window.location.href.includes('web.telegram.org')) { // Se siamo su Telegram Web
+            el = document.querySelectorAll('span.tg_head_peer_title')[0];
+        } else if (window.location.href.includes('messenger.com')) { // Se siamo su Messenger
+            el = document.getElementsByClassName('bafdgad4 tkr6xdv7')[0].getElementsByClassName('a8c37x1j ni8dbmo4 stjgntxs l9j0dhe7 ltmttdrg g0qnabr5')[0];
+        } else if (window.location.href.includes('meet.google.com')) { // Se siamo su Meet
+            console.log('Su Meet non bisogna entrare in una chat!');
+            return '';
+        } else if (window.location.href.includes('instagram.com/direct/')) {
+            el = document.getElementsByClassName('PjuAP')[0].getElementsByClassName('Igw0E IwRSH eGOV_ ybXk5 _4EzTm')[0];
+        }
+    } catch (e) {
+        console.error(e);
     }
 
     // Se e' aperta una chat
@@ -235,12 +252,22 @@ const entraInChat = async(nomeChat) => {
             }
         } else if (window.location.href.includes('https://web.telegram.org')) { // Se siamo su Telegram Web
 
-        } else if (window.location.href.includes('https://meet.google.com')) { // Se siamo su Meet
-
         } else if (window.location.href.includes('messenger.com')) { // Se siamo su Messenger
 
         } else if (window.location.href.includes('instagram.com/direct/')) {
+            if (getChatName() == nomeChat) {
+                spammerLog('Sono nella chat!');
+                return true;
+            } else {
+                bbrowser.storage.local.set({
+                    aperturaChatInstagram: true,
+                    chatInstagramDaAprire: nomeChat
+                }, () => {
+                    window.location.href = `https://www.instagram.com/${nomeChat}/`;
+                });
 
+                return false;
+            }
         }
 
         return true;
@@ -249,6 +276,36 @@ const entraInChat = async(nomeChat) => {
         return false;
     }
 }
+
+(async() => {
+    let aperturaChatInstagram;
+    let chatInstagramDaAprire;
+    try {
+        aperturaChatInstagram = (await getStorageData('aperturaChatInstagram')).aperturaChatInstagram;
+        if (typeof aperturaChatInstagram == undefined) throw Exception();
+    } catch (e) {
+        aperturaChatInstagram = false;
+    }
+
+    chatInstagramDaAprire = (await getStorageData('chatInstagramDaAprire')).chatInstagramDaAprire;
+
+    if (typeof chatInstagramDaAprire !== undefined && chatInstagramDaAprire != null && aperturaChatInstagram) {
+        const url = `https://www.instagram.com/${chatInstagramDaAprire}/`;
+
+        if (window.location.href !== url) window.location.href = url;
+    }
+
+    if (aperturaChatInstagram) {
+        bbrowser.storage.local.set({
+            aperturaChatInstagram: false,
+            chatInstagramDaAprire: null
+        }, () => {
+            setTimeout(() => {
+                document.getElementsByClassName('sqdOP  L3NKy _4pI4F   _8A5w5    ')[0].click();
+            }, 500);
+        });
+    }
+})();
 
 /**
  * Funzione per inviare un messaggio
@@ -485,12 +542,14 @@ const botProgrammati = async() => {
             }
 
             for (let i = 0; i < msgProgrammati.length; i++) {
-                if (Date.now() >= Date.parse(msgProgrammati[i].orario)) { // Se devo inviare il messaggio
+                if (Date.now() >= Date.parse(msgProgrammati[i].orario) && msgProgrammati[i].piattaforma == piattaformaAttuale()) { // Se devo inviare il messaggio
                     stopBot();
                     programmatoStart = true;
                     const res = await entraInChat(msgProgrammati[i].nome);
-                    sendMsgBot(msgProgrammati[i].msg);
-                    msgProgrammati.splice(i, 1);
+                    if (res) {
+                        sendMsgBot(msgProgrammati[i].msg);
+                        msgProgrammati.splice(i, 1);
+                    }
                     programmatoStart = !res;
                 }
             }
@@ -656,7 +715,8 @@ const dialogBot = async() => {
                     msgProgrammati.push({
                         nome: spammerNameProgrammato,
                         msg: spammerTextProgrammato,
-                        orario: spammerOrarioProgrammato
+                        orario: spammerOrarioProgrammato,
+                        piattaforma: piattaformaAttuale()
                     });
 
                     bbrowser.storage.local.set({
