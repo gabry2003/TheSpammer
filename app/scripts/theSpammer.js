@@ -251,12 +251,27 @@ const entraInChat = async(nomeChat) => {
                 }
             }
         } else if (window.location.href.includes('https://web.telegram.org')) { // Se siamo su Telegram Web
+            let inputEl = document.getElementsByClassName('im_dialogs_search')[0].getElementsByClassName('form-control im_dialogs_search_field')[0];
+            inputEl.value = nomeChat;
+            inputEl.dispatchEvent(new Event(
+                'input'
+            ));
 
+            await (async() => {
+                return new Promise(r => setTimeout(r, 1000))
+            })();
+
+            document.getElementsByClassName('im_dialogs_col')[0].getElementsByClassName('nav nav-pills nav-stacked')[0].getElementsByTagName('li')[0].getElementsByTagName('a')[0].dispatchEvent(new MouseEvent('mousedown'));
         } else if (window.location.href.includes('messenger.com')) { // Se siamo su Messenger
-
+            return false; // per il momento non disponibile
+        } else if (window.location.href.includes('https://meet.google.com')) {
+            document.getElementsByClassName('DPvwYc sm8sCf KdraA')[0].click();
+            await (async() => {
+                return new Promise(r => setTimeout(r, 300))
+            })();
         } else if (window.location.href.includes('instagram.com/direct/')) {
             if (getChatName() == nomeChat) {
-                spammerLog('Sono nella chat!');
+                spammerLog('Sono già nella chat!');
                 return true;
             } else {
                 bbrowser.storage.local.set({
@@ -351,7 +366,9 @@ const sendMsgBot = (msg) => {
                 inputEl.dispatchEvent(new Event('input', {
                     bubbles: true
                 }));
-                buttonEl = document.querySelectorAll(".uArJ5e.Y5FYJe.cjq2Db.IOMpW.Cs0vCd.M9Bg4d .XuQwKc")[0]; // Pulsante per inviare il messaggio
+
+                buttonEl = document.getElementsByClassName('BC4V9b')[0].getElementsByTagName('span')[0]; // Pulsante per inviare il messaggio
+                buttonEl.click();
             } else if (window.location.href.includes("messenger.com")) { // Se siamo su Messenger
                 // Simulo l'inserimento del testo da tastiera
                 document.getElementsByClassName('rq0escxv datstx6m k4urcfbm a8c37x1j')[0].querySelectorAll('[data-text=true]')[0].dispatchEvent(new InputEvent('textInput', { data: msg, bubbles: true }));
@@ -617,7 +634,7 @@ const dialogBot = async() => {
     <p><br>Orario invio:<br><br></p>
     <div class="box-container">
         <div class="box">
-            <input id="spammerOrarioProgrammato" type="datetime-local" />
+            <input id="spammerOrarioProgrammato" type="datetime-local" step="1" />
             <span></span>
         </div>
     </div>
@@ -702,7 +719,14 @@ const dialogBot = async() => {
             tipoInvio = document.getElementById('tipoInvio').value;
 
             if (spammerTextProgrammato != '') { // Se vuole programmare un messaggio
-                if (spammerTextProgrammato != '' && spammerNameProgrammato != '' && spammerOrarioProgrammato != '') {
+                let cond = true;
+                if (!window.location.href.includes('https://meet.google.com')) {
+                    cond = spammerTextProgrammato != '' && spammerNameProgrammato != '' && spammerOrarioProgrammato != '';
+                } else {
+                    cond = spammerTextProgrammato != '' && spammerOrarioProgrammato != '';
+                }
+
+                if (cond) {
                     let msgProgrammati;
                     try {
                         msgProgrammati = (await getStorageData('msgProgrammati')).msgProgrammati;

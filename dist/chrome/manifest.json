@@ -47,7 +47,8 @@
         "styles/tabStyle.css"
       ],
       "js": [
-        "scripts/jquery.min.js",
+        "scripts/jquery-3.5.1.min.js",
+        "scripts/jquery.autotype.js",
         "scripts/promise-polyfill.js",
         "scripts/sweetalert2.all.min.js",
         "scripts/theSpammer.js"
