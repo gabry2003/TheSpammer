@@ -98,6 +98,8 @@ const piattaformaAttuale = () => {
         return 'Meet';
     } else if (window.location.href.includes('instagram.com/direct/')) {
         return 'Instagram';
+    } else if (window.location.href.includes('tellonym.me/')) {
+        return 'Tellonym';
     }
 };
 /**
@@ -117,6 +119,8 @@ const getChatName = () => {
             return '';
         } else if (window.location.href.includes('instagram.com/direct/')) {
             el = document.getElementsByClassName('PjuAP')[0].getElementsByClassName('Igw0E IwRSH eGOV_ ybXk5 _4EzTm')[0];
+        } else if (window.location.href.includes('tellonym.me/')) {
+            el = document.querySelectorAll('[data-radium="true"]')[5];
         }
     } catch (e) {
         console.error(e);
@@ -137,7 +141,7 @@ const getChatName = () => {
  * @param {*} [confronto=null] 
  */
 const checkChatName = (confronto = null) => {
-    if (window.location.href.includes('web.whatsapp.com') || window.location.href.includes('web.telegram.org') || window.location.href.includes('messenger.com') || window.location.href.includes('instagram.com/direct/')) {
+    if (window.location.href.includes('web.whatsapp.com') || window.location.href.includes('web.telegram.org') || window.location.href.includes('messenger.com') || window.location.href.includes('instagram.com/direct/') || window.location.href.includes('tellonym.me/')) {
 
         let cond = getChatName() !== ''; // La condizione iniziale e' che sia dentro una chat
         if (confronto !== null) { // Se ha passato un valore da confrontare
@@ -239,7 +243,7 @@ const entraInChat = async(nomeChat) => {
                 } catch (e) {
                     let el = listaContatti[i].getElementsByClassName('_1hI5g _1XH7x _1VzZY')[0];
                     triggerMouseEvent = (node, eventType) => {
-                        var clickEvent = document.createEvent('MouseEvents');
+                        let clickEvent = document.createEvent('MouseEvents');
                         clickEvent.initEvent(eventType, true, true);
                         node.dispatchEvent(clickEvent);
                     }
@@ -269,6 +273,15 @@ const entraInChat = async(nomeChat) => {
             await (async() => {
                 return new Promise(r => setTimeout(r, 300))
             })();
+        } else if (window.location.href.includes('tellonym.me/')) {
+            if (getChatName() == nomeChat) {
+                spammerLog('Sono già nella chat!');
+                return true;
+            } else {
+                window.location.href = `https://tellonym.me/${nomeChat}`;
+
+                return false;
+            }
         } else if (window.location.href.includes('instagram.com/direct/')) {
             if (getChatName() == nomeChat) {
                 spammerLog('Sono già nella chat!');
@@ -343,6 +356,8 @@ const sendMsgBot = (msg) => {
         inputEl = document.querySelectorAll('div.notranslate._5rpu [data-text=true]')[0];
     } else if (window.location.href.includes('instagram.com/direct/')) {
         inputEl = document.getElementsByClassName('Igw0E IwRSH eGOV_ _4EzTm L-sTb HcJZg')[0].getElementsByTagName('textarea')[0];
+    } else if (window.location.href.includes('tellonym.me/')) {
+        inputEl = document.querySelectorAll('textarea[data-radium="true"]')[0];
     }
 
     if (typeof(inputEl) !== 'undefined' && inputEl !== null) { // Se esiste il campo di input
@@ -380,6 +395,23 @@ const sendMsgBot = (msg) => {
                     bubbles: true
                 }));
                 buttonEl = document.getElementsByClassName('Igw0E IwRSH eGOV_ _4EzTm L-sTb HcJZg')[0].getElementsByClassName('sqdOP yWX7d y3zKF')[0];
+                buttonEl.click();
+            } else if (window.location.href.includes('tellonym.me/')) {
+                triggerMouseEvent = (node, eventType) => {
+                    let clickEvent = document.createEvent('MouseEvents');
+                    clickEvent.initEvent(eventType, true, true);
+                    node.dispatchEvent(clickEvent);
+                }
+                triggerMouseEvent(inputEl, 'mouseover');
+                triggerMouseEvent(inputEl, 'mousedown');
+                triggerMouseEvent(inputEl, 'mouseup');
+                triggerMouseEvent(inputEl, 'click');
+                inputEl.innerHTML = msg;
+                inputEl.value = msg;
+                inputEl.dispatchEvent(new Event('focus'));
+                inputEl.dispatchEvent(new Event('input'));
+                inputEl.dispatchEvent(new Event('change'));
+                buttonEl = document.getElementsByClassName('css-76zvg2 css-bfa6kz')[1];
                 buttonEl.click();
             }
         } catch (err) {
