@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', async() => {
                 const split = orarioOrig.split('T');
                 let orario = `${split[0]} alle ${split[1]}`;
 
-                const piattaforme = ['Whatsapp', 'Telegram', 'Messenger', 'Meet', 'Instagram', 'Tellonym'];
+                const piattaforme = ['Whatsapp', 'Telegram', 'Messenger', 'Meet', 'Instagram', 'Tellonym', 'Teams'];
 
                 let selectPiattaforma = `<select id="piattaforma-${i}" class="form-select">`;
 

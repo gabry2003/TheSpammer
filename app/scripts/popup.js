@@ -32,9 +32,10 @@ const renderURL = (url, id) => {
     const pageMessenger = 'messenger.com';
     const pageInstagram = 'instagram.com/direct/';
     const pageTellonym = 'tellonym.me';
+    const pageTeams = 'teams.microsoft.com/';
 
     // Se l'utente è in un sito dove si spamma
-    if (url.includes(pageWhatsapp) || url.includes(pageTelegram) || url.includes(pageMeet) || url.includes(pageMessenger) || url.includes(pageInstagram) || url.includes(pageTellonym)) {
+    if (url.includes(pageWhatsapp) || url.includes(pageTelegram) || url.includes(pageMeet) || url.includes(pageMessenger) || url.includes(pageInstagram) || url.includes(pageTellonym) || url.includes(pageTeams)) {
         // Fai partire il bot
         document.getElementById('start-bot').addEventListener('click', () => {
             bbrowser.tabs.sendMessage(id, { 'message': 'dialogBot' });
@@ -56,6 +57,7 @@ const renderURL = (url, id) => {
         });
 
         document.getElementById('apri-instagram').parentElement.setAttribute('style', 'display: none;');
+        document.getElementById('apri-teams').parentElement.setAttribute('style', 'display: none;');
         document.getElementById('apri-tellonym').parentElement.setAttribute('style', 'display: none;');
     } else { // Altrimenti, se e' su un'altra pagina
         // Cambio il testo
@@ -65,6 +67,7 @@ const renderURL = (url, id) => {
         document.getElementById('stop-bot').innerHTML = '<img src="popup/images/messenger.png" width=33 height=33></img><span> &nbsp;Apri Facebook Messenger</span>';
         document.getElementById('apri-instagram').parentElement.setAttribute('style', '');
         document.getElementById('apri-tellonym').parentElement.setAttribute('style', '');
+        document.getElementById('apri-teams').parentElement.setAttribute('style', '');
 
         // Inserisco gli eventi
         document.getElementById('start-bot').addEventListener('click', () => {

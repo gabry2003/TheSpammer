@@ -1,7 +1,7 @@
 {
   "name": "__MSG_appName__",
   "description": "__MSG_appDescription__",
-  "version": "2.1",
+  "version": "2.2",
   "short_name": "__MSG_appShortName__",
   "homepage_url": "https://github.com/gabry2003/TheSpammer",
   "manifest_version": 2,
@@ -40,7 +40,8 @@
         "*://meet.google.com/*",
         "*://*.messenger.com/*",
         "*://*.instagram.com/*",
-        "*://*.tellonym.me/*"
+        "*://*.tellonym.me/*",
+        "*://teams.microsoft.com/*"
       ],
       "css": [
         "styles/sweetalert2.min.css",
@@ -69,6 +70,7 @@
     "*://*.instagram.com/*",
     "*://*.messenger.com/*",
     "*://*.tellonym.me/*",
+    "*://teams.microsoft.com/*",
     "*://cdn.jsdelivr.net/*",
     "*://code.jquery.com/*",
     "*://cdn.jsdelivr.net/*",

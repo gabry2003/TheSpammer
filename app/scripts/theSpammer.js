@@ -28,6 +28,31 @@ if (chrome) {
     bbrowser = browser;
 }
 
+const injectScript = (scriptId, code) => {
+    try {
+        document.getElementById(scriptId).remove();
+    } catch (e) {
+        console.error(e);
+    }
+
+    let scriptTag = document.createElement('script');
+
+    scriptTag.id = scriptId;
+    scriptTag.innerHTML = code;
+    document.head.appendChild(scriptTag);
+};
+
+const injectStyle = (styleId, code) => {
+    try {
+        document.getElementById(styleId).remove();
+    } catch (e) {
+        console.error(e);
+    }
+
+    let styleElem = document.head.appendChild(document.createElement('style'));
+    styleElem.id = styleId;
+    styleElem.innerHTML = code;
+};
 
 const setSweetTheme = async() => {
     let temaScuro; // Se e' attivo o no il tema scuro
@@ -40,17 +65,9 @@ const setSweetTheme = async() => {
         temaScuro = true;
     }
 
-    try {
-        document.getElementById('thespammer-alert').remove();
-    } catch (e) {
-        console.error(e);
-    }
-
-    let styleElem = document.head.appendChild(document.createElement('style'));
-    styleElem.id = 'thespammer-alert'
-    styleElem.innerHTML = `@import url('https://fonts.googleapis.com/css?family=Poppins');`;
+    let code = `@import url('https://fonts.googleapis.com/css?family=Poppins');`;
     if (temaScuro) {
-        styleElem.innerHTML += `.swal-modal, .swal-icon--success:before, .swal-icon--success:after, .swal-icon--success:before, .swal-icon--success__hide-corners,
+        code += `.swal-modal, .swal-icon--success:before, .swal-icon--success:after, .swal-icon--success:before, .swal-icon--success__hide-corners,
         .swal-icon--error:before, .swal-icon--error:after, .swal-icon--error:before, .swal-icon--error__hide-corners,
         .swal-icon--warning:before, .swal-icon--warning:after, .swal-icon--warning:before, .swal-icon--warning__hide-corners {
             background-color: #000000;
@@ -61,7 +78,7 @@ const setSweetTheme = async() => {
 
         coloreSelect = '#c0392b';
     }
-    styleElem.innerHTML += `
+    code += `
 .swal-overlay:before {
     height: 0% !important;
 }
@@ -236,6 +253,7 @@ $focusColor:#EF9F00;
   }
 }
 `;
+    injectStyle('thespammer-alert', code);
 };
 /**
  * Funzione per inviare una notifica toast con sweetalert
@@ -288,50 +306,60 @@ const spammerLog = (testo, colore = '#bada55', sfondo = '#222') => {
     console.log('%c ' + testo, 'background: ' + sfondo + '; color: ' + colore + '; font-weight: bold;');
 }
 
-if (window.location.href.includes("https://web.whatsapp.com")) {
-    spammerLog("Siamo su Whatsapp Web");
-} else if (window.location.href.includes("https://web.telegram.org")) {
-    spammerLog("Siamo su Telegram Web");
-} else if (window.location.href.includes("https://meet.google.com")) {
-    spammerLog("Siamo su Google Meet");
-} else if (window.location.href.includes("messenger.com")) {
-    spammerLog("Siamo su Facebook Messenger");
-}
-
-const piattaformaAttuale = () => {
+const piattaformaAttuale = (log = false) => {
     if (window.location.href.includes('web.whatsapp.com')) { // Se siamo su Whatsapp Web
-        return 'Whatsapp'
+        res = 'Whatsapp';
     } else if (window.location.href.includes('web.telegram.org')) { // Se siamo su Telegram Web
-        return 'Telegram';
+        res = 'Telegram';
     } else if (window.location.href.includes('messenger.com')) { // Se siamo su Messenger
-        return 'Messenger';
+        res = 'Messenger';
     } else if (window.location.href.includes('meet.google.com')) { // Se siamo su Meet
-        return 'Meet';
+        res = 'Meet';
     } else if (window.location.href.includes('instagram.com/direct/')) {
-        return 'Instagram';
+        res = 'Instagram';
     } else if (window.location.href.includes('tellonym.me/')) {
-        return 'Tellonym';
+        res = 'Tellonym';
+    } else if (window.location.href.includes('teams.microsoft.com/')) {
+        res = 'Teams';
     }
+
+    if (log) {
+        spammerLog(`Siamo su ${res}`);
+    }
+
+    return res;
 };
+
+piattaformaAttuale(true);
+
 /**
  * Ritorna il nome della chat attuale
  */
 const getChatName = () => {
     let el;
     try {
-        if (window.location.href.includes('web.whatsapp.com')) { // Se siamo su Whatsapp Web
-            el = document.querySelectorAll('#main span._1hI5g._1XH7x._1VzZY')[0];
-        } else if (window.location.href.includes('web.telegram.org')) { // Se siamo su Telegram Web
-            el = document.querySelectorAll('span.tg_head_peer_title')[0];
-        } else if (window.location.href.includes('messenger.com')) { // Se siamo su Messenger
-            el = document.getElementsByClassName('bafdgad4 tkr6xdv7')[0].getElementsByClassName('a8c37x1j ni8dbmo4 stjgntxs l9j0dhe7 ltmttdrg g0qnabr5')[0];
-        } else if (window.location.href.includes('meet.google.com')) { // Se siamo su Meet
-            console.log('Su Meet non bisogna entrare in una chat!');
-            return '';
-        } else if (window.location.href.includes('instagram.com/direct/')) {
-            el = document.getElementsByClassName('PjuAP')[0].getElementsByClassName('Igw0E IwRSH eGOV_ ybXk5 _4EzTm')[0];
-        } else if (window.location.href.includes('tellonym.me/')) {
-            el = document.querySelectorAll('[data-radium="true"]')[5];
+        switch (piattaformaAttuale()) {
+            case 'Whatsapp':
+                el = document.querySelectorAll('#main span._1hI5g._1XH7x._1VzZY')[0];
+                break;
+            case 'Telegram':
+                el = document.querySelectorAll('span.tg_head_peer_title')[0];
+                break;
+            case 'Teams':
+                el = document.querySelectorAll('[data-tid="chat-header-name"]')[0];
+                break;
+            case 'Messenger':
+                el = document.getElementsByClassName('bafdgad4 tkr6xdv7')[0].getElementsByClassName('a8c37x1j ni8dbmo4 stjgntxs l9j0dhe7 ltmttdrg g0qnabr5')[0];
+                break;
+            case 'Meet':
+                spammerLog('Su Meet non bisogna entrare in una chat!');
+                return '';
+            case 'Instagram':
+                el = document.getElementsByClassName('PjuAP')[0].getElementsByClassName('Igw0E IwRSH eGOV_ ybXk5 _4EzTm')[0];
+                break;
+            case 'Tellonym':
+                el = document.querySelectorAll('[data-radium="true"]')[5];
+                break;
         }
     } catch (e) {
         console.error(e);
@@ -341,7 +369,7 @@ const getChatName = () => {
     if (typeof(el) !== 'undefined' && el !== null) {
         return el.innerText;
     } else { // Altrimenti
-        console.log('el1 non trovato');
+        spammerLog('el1 non trovato');
         return ''; // Ritorno una stringa vuota
     }
 };
@@ -352,20 +380,17 @@ const getChatName = () => {
  * @param {*} [confronto=null] 
  */
 const checkChatName = (confronto = null) => {
-    if (window.location.href.includes('web.whatsapp.com') || window.location.href.includes('web.telegram.org') || window.location.href.includes('messenger.com') || window.location.href.includes('instagram.com/direct/') || window.location.href.includes('tellonym.me/')) {
+    const piattaforma = piattaformaAttuale();
 
-        let cond = getChatName() !== ''; // La condizione iniziale e' che sia dentro una chat
-        if (confronto !== null) { // Se ha passato un valore da confrontare
+    if (piattaforma == 'Meet') return true;
+    let cond = getChatName() !== ''; // La condizione iniziale e' che sia dentro una chat
+    if (confronto !== null) { // Se ha passato un valore da confrontare
 
-            // Aggiungo che questo valore sia uguale alla chat attuale
-            cond = cond && getChatName() == confronto;
-        }
-
-        return cond;
-
-    } else { // Negli altri casi
-        return true;
+        // Aggiungo che questo valore sia uguale alla chat attuale
+        cond = cond && getChatName() == confronto;
     }
+
+    return cond;
 };
 
 const visualizzaStickers = async(time = 3000) => {
@@ -453,131 +478,187 @@ const entraInChat = async(nomeChat, msgEl = null) => {
     spammerLog(`Entro nella chat: ${nomeChat}`);
 
     try {
-        if (window.location.href.includes('https://web.whatsapp.com')) { // Se siamo su Whatsapp Web
-            let nuovaChat = document.querySelectorAll('[data-icon="chat"]')[0];
-            nuovaChat.click(); // Clicco il pulsante "Nuova chat"
-            await (async() => {
-                return new Promise(r => setTimeout(r, 1000))
-            })();
-            let inputEl = document.querySelectorAll('._2BQrC._1mHgA.copyable-area [contenteditable=true]')[0];
-            inputEl.innerHTML = nomeChat;
-            inputEl.dispatchEvent(new Event('focus', {
-                bubbles: true
-            }))
-            inputEl.dispatchEvent(new Event('input', {
-                bubbles: true
-            }));
-            await (async() => {
-                return new Promise(r => setTimeout(r, 1000))
-            })();
+        let inputEl;
 
-            let listaContatti = document.getElementsByClassName('_3Xjbn _1RHZR')[0].getElementsByClassName('_1MZWu');
-            for (let i = 0; i < listaContatti.length; i++) {
-                try {
-                    let tmp = listaContatti[i].getElementsByClassName('_3dHYI')[0];
-                    if (tmp == null || typeof tmp == undefined) throw new Error('Contatto trovato!');
-                } catch (e) {
-                    let el = listaContatti[i].getElementsByClassName('_1hI5g _1XH7x _1VzZY')[0];
-                    triggerMouseEvent = (node, eventType) => {
-                        let clickEvent = document.createEvent('MouseEvents');
-                        clickEvent.initEvent(eventType, true, true);
-                        node.dispatchEvent(clickEvent);
+        switch (piattaformaAttuale()) {
+            case 'Whatsapp':
+                let nuovaChat = document.querySelectorAll('[data-icon="chat"]')[0];
+                nuovaChat.click(); // Clicco il pulsante "Nuova chat"
+                await (async() => {
+                    return new Promise(r => setTimeout(r, 1000))
+                })();
+                inputEl = document.querySelectorAll('._2BQrC._1mHgA.copyable-area [contenteditable=true]')[0];
+                inputEl.innerHTML = nomeChat;
+                inputEl.dispatchEvent(new Event('focus', {
+                    bubbles: true
+                }))
+                inputEl.dispatchEvent(new Event('input', {
+                    bubbles: true
+                }));
+                await (async() => {
+                    return new Promise(r => setTimeout(r, 1000))
+                })();
+
+                let listaContatti = document.getElementsByClassName('_3Xjbn _1RHZR')[0].getElementsByClassName('_1MZWu');
+                for (let i = 0; i < listaContatti.length; i++) {
+                    try {
+                        let tmp = listaContatti[i].getElementsByClassName('_3dHYI')[0];
+                        if (tmp == null || typeof tmp == undefined) throw new Error('Contatto trovato!');
+                    } catch (e) {
+                        let el = listaContatti[i].getElementsByClassName('_1hI5g _1XH7x _1VzZY')[0];
+                        triggerMouseEvent = (node, eventType) => {
+                            let clickEvent = document.createEvent('MouseEvents');
+                            clickEvent.initEvent(eventType, true, true);
+                            node.dispatchEvent(clickEvent);
+                        }
+                        triggerMouseEvent(el, 'mouseover');
+                        triggerMouseEvent(el, 'mousedown');
+                        triggerMouseEvent(el, 'mouseup');
+                        triggerMouseEvent(el, 'click');
+                        break;
                     }
-                    triggerMouseEvent(el, 'mouseover');
-                    triggerMouseEvent(el, 'mousedown');
-                    triggerMouseEvent(el, 'mouseup');
-                    triggerMouseEvent(el, 'click');
-                    break;
                 }
-            }
-        } else if (window.location.href.includes('https://web.telegram.org')) { // Se siamo su Telegram Web
-            let inputEl = document.getElementsByClassName('im_dialogs_search')[0].getElementsByClassName('form-control im_dialogs_search_field')[0];
-            inputEl.value = nomeChat;
-            inputEl.dispatchEvent(new Event(
-                'input'
-            ));
 
-            await (async() => {
-                return new Promise(r => setTimeout(r, 1000))
-            })();
+                break;
+            case 'Telegram':
+                inputEl = document.getElementsByClassName('im_dialogs_search')[0].getElementsByClassName('form-control im_dialogs_search_field')[0];
+                inputEl.value = nomeChat;
+                inputEl.dispatchEvent(new Event(
+                    'input'
+                ));
 
-            document.getElementsByClassName('im_dialogs_col')[0].getElementsByClassName('nav nav-pills nav-stacked')[0].getElementsByTagName('li')[0].getElementsByTagName('a')[0].dispatchEvent(new MouseEvent('mousedown'));
-        } else if (window.location.href.includes('messenger.com')) { // Se siamo su Messenger
-            const idChatAttuale = window.location.href.split('messenger.com/t/')[1];
-            let idChat;
+                await (async() => {
+                    return new Promise(r => setTimeout(r, 1000))
+                })();
 
-            try {
-                const split = nomeChat.split('id=');
-                console.log(split);
+                document.getElementsByClassName('im_dialogs_col')[0].getElementsByClassName('nav nav-pills nav-stacked')[0].getElementsByTagName('li')[0].getElementsByTagName('a')[0].dispatchEvent(new MouseEvent('mousedown'));
 
-                idChat = split[1];
+                break;
+            case 'Teams':
+                // Microsoft Teams usa React quindi per inserire il valore dentro il campo di input devo fare così
+                injectScript('thespammer-entra-in-chat-microsoft-teams', `(async() => {
+    try {
+        document.getElementById('thespammer-entra-in-chat-teams-state').remove();
+    } catch(e) {
+        console.error(e);
+    }
 
-                if (idChat == undefined) throw new Error('Id della chat da profilo facebook non trovato!');
-            } catch (e) {
-                console.error(e);
+    try {
+        nomeChat = \`${nomeChat}\`;
+        inputEl = angular.element(document.getElementById('searchInputField'));
+        inputEl.focus();
+        inputEl.val(nomeChat);
+        inputEl.change();
+    
+        await (async() => {
+            return new Promise(r => setTimeout(r, 1500))
+        })();
+    
+        document.getElementById('autosuggest_search_dropdown').getElementsByTagName('li')[1].querySelectorAll('button[class="ts-sym autosuggest-row autosuggest-person text-left autosuggest-button"]')[0].dispatchEvent(new Event('mousedown'));
+    
+        esitoTag = document.createElement('span');
+    
+        esitoTag.id = 'thespammer-entra-in-chat-teams-state';
+        esitoTag.innerHTML = 'ok';
+        document.head.appendChild(esitoTag);
+    } catch(e) {
+        console.error(e);
+    }
+})();`);
+
+
+                await (async() => {
+                    return new Promise(r => setTimeout(r, 3500))
+                })();
+
+                let esito = document.getElementById('thespammer-entra-in-chat-teams-state');
+
+                if (esito !== null && esito !== undefined) {
+                    esito.remove();
+
+                    return true;
+                } else {
+                    throw new Error("Non riesco ad aprire la chat!");
+                }
+                break;
+            case 'Messenger':
+                const idChatAttuale = window.location.href.split('messenger.com/t/')[1];
+                let idChat;
 
                 try {
-                    const split = nomeChat.split('messenger.com/t/');
+                    const split = nomeChat.split('id=');
                     console.log(split);
 
                     idChat = split[1];
 
-                    if (idChat == undefined) throw new Error('Id della chat da messenger non trovato!');
+                    if (idChat == undefined) throw new Error('Id della chat da profilo facebook non trovato!');
                 } catch (e) {
                     console.error(e);
+
+                    try {
+                        const split = nomeChat.split('messenger.com/t/');
+                        console.log(split);
+
+                        idChat = split[1];
+
+                        if (idChat == undefined) throw new Error('Id della chat da messenger non trovato!');
+                    } catch (e) {
+                        console.error(e);
+                    }
                 }
-            }
 
-            if (idChat == null || idChat == undefined) {
-                notifica(null, 'error', 'Impossibile inviare il messaggio programmato! Puoi modificarlo dalla pagina di gestione dei messaggi programmati', null);
+                if (idChat == null || idChat == undefined) {
+                    throw new Error('Impossibile trovare la chat!');
+                }
 
-                disableMsgProgrammati(msgEl);
+                if (idChatAttuale == idChat) {
+                    spammerLog('Sono già nella chat!');
 
-                throw new Error('Impossibile trovare la chat!');
-            }
+                    return true;
+                } else {
+                    window.location.href = `https://www.messenger.com/t/${idChat}`;
 
-            if (idChatAttuale == idChat) {
-                spammerLog('Sono già nella chat!');
+                    return false;
+                }
+            case 'Meet':
+                document.getElementsByClassName('DPvwYc sm8sCf KdraA')[0].click();
+                await (async() => {
+                    return new Promise(r => setTimeout(r, 300))
+                })();
+                break;
+            case 'Instagram':
+                if (getChatName() == nomeChat) {
+                    spammerLog('Sono già nella chat!');
+                    return true;
+                } else {
+                    bbrowser.storage.local.set({
+                        aperturaChatInstagram: true,
+                        chatInstagramDaAprire: nomeChat,
+                        msgEl: msgEl
+                    }, () => {
+                        window.location.href = `https://www.instagram.com/${nomeChat}/`;
+                    });
 
-                return true;
-            } else {
-                window.location.href = `https://www.messenger.com/t/${idChat}`;
+                    return false;
+                }
+            case 'Tellonym':
+                if (getChatName() == nomeChat) {
+                    spammerLog('Sono già nella chat!');
+                    return true;
+                } else {
+                    window.location.href = `https://tellonym.me/${nomeChat}`;
 
-                return false;
-            }
-        } else if (window.location.href.includes('https://meet.google.com')) {
-            document.getElementsByClassName('DPvwYc sm8sCf KdraA')[0].click();
-            await (async() => {
-                return new Promise(r => setTimeout(r, 300))
-            })();
-        } else if (window.location.href.includes('tellonym.me/')) {
-            if (getChatName() == nomeChat) {
-                spammerLog('Sono già nella chat!');
-                return true;
-            } else {
-                window.location.href = `https://tellonym.me/${nomeChat}`;
-
-                return false;
-            }
-        } else if (window.location.href.includes('instagram.com/direct/')) {
-            if (getChatName() == nomeChat) {
-                spammerLog('Sono già nella chat!');
-                return true;
-            } else {
-                bbrowser.storage.local.set({
-                    aperturaChatInstagram: true,
-                    chatInstagramDaAprire: nomeChat
-                }, () => {
-                    window.location.href = `https://www.instagram.com/${nomeChat}/`;
-                });
-
-                return false;
-            }
+                    return false;
+                }
         }
 
         return true;
     } catch (e) {
         console.error(e);
+
+        notifica(null, 'error', 'Non riesco ad inviare il messaggio programmato! Puoi modificarlo dalla pagina di gestione dei messaggi programmati', null);
+        disableMsgProgrammati(msgEl);
+
         return false;
     }
 }
@@ -585,11 +666,20 @@ const entraInChat = async(nomeChat, msgEl = null) => {
 (async() => {
     let aperturaChatInstagram;
     let chatInstagramDaAprire;
+    let msgEl;
+
     try {
         aperturaChatInstagram = (await getStorageData('aperturaChatInstagram')).aperturaChatInstagram;
         if (aperturaChatInstagram == undefined) throw new Error();
     } catch (e) {
         aperturaChatInstagram = false;
+    }
+
+    try {
+        msgEl = (await getStorageData('msgEl')).msgEl;
+        if (msgEl == undefined) throw new Error();
+    } catch (e) {
+        msgEl = null;
     }
 
     chatInstagramDaAprire = (await getStorageData('chatInstagramDaAprire')).chatInstagramDaAprire;
@@ -601,14 +691,27 @@ const entraInChat = async(nomeChat, msgEl = null) => {
     }
 
     if (aperturaChatInstagram) {
-        bbrowser.storage.local.set({
-            aperturaChatInstagram: false,
-            chatInstagramDaAprire: null
-        }, () => {
-            setTimeout(() => {
-                document.getElementsByClassName('sqdOP  L3NKy _4pI4F   _8A5w5    ')[0].click();
-            }, 500);
-        });
+        setTimeout(async() => {
+            bbrowser.storage.local.set({
+                aperturaChatInstagram: false,
+                chatInstagramDaAprire: null,
+                msgEl: null
+            }, async() => {
+                try {
+                    document.getElementsByClassName('sqdOP  L3NKy _4pI4F   _8A5w5    ')[0].click();
+                } catch (e) {
+                    console.error('Impossibile aprire la chat');
+                    console.error(e);
+
+                    notifica(null, 'error', 'Impossibile inviare il messaggio programmato!', null);
+                    await disableMsgProgrammati(msgEl);
+
+                    setTimeout(async() => {
+                        window.location.href = 'https://www.instagram.com/direct/inbox/';
+                    }, 3000);
+                }
+            });
+        }, 500);
     }
 })();
 
@@ -623,112 +726,156 @@ const entraInChat = async(nomeChat, msgEl = null) => {
 const sendMsgBot = (msg) => {
     // Campo di input
     let inputEl;
-    if (window.location.href.includes('https://web.whatsapp.com')) { // Se siamo su Whatsapp Web
-        inputEl = document.querySelectorAll('#main ._1awRl.copyable-text.selectable-text')[0];
-    } else if (window.location.href.includes('https://web.telegram.org')) { // Se siamo su Telegram Web
-        inputEl = document.querySelectorAll('.composer_rich_textarea')[0];
-    } else if (window.location.href.includes('https://meet.google.com')) { // Se siamo su Meet
-        inputEl = document.querySelectorAll('textarea.KHxj8b.tL9Q4c')[0];
-    } else if (window.location.href.includes('messenger.com')) { // Se siamo su Messenger
-        inputEl = document.querySelectorAll('div.notranslate._5rpu [data-text=true]')[0];
-    } else if (window.location.href.includes('instagram.com/direct/')) {
-        inputEl = document.getElementsByClassName('Igw0E IwRSH eGOV_ _4EzTm L-sTb HcJZg')[0].getElementsByTagName('textarea')[0];
-    } else if (window.location.href.includes('tellonym.me/')) {
-        inputEl = document.querySelectorAll('textarea[data-radium="true"]')[0];
+
+    switch (piattaformaAttuale()) {
+        case 'Whatsapp':
+            inputEl = document.querySelectorAll('#main ._1awRl.copyable-text.selectable-text')[0];
+            break;
+        case 'Telegram':
+            inputEl = document.querySelectorAll('.composer_rich_textarea')[0];
+            break;
+        case 'Teams':
+            inputEl = document.getElementsByClassName('cke_wysiwyg_div cke_reset cke_enable_context_menu cke_editable cke_editable_themed cke_contents_ltr cke_show_borders')[0];
+            break;
+        case 'Messenger':
+            inputEl = document.querySelectorAll('div.notranslate._5rpu [data-text=true]')[0];
+            break;
+        case 'Meet':
+            inputEl = document.querySelectorAll('textarea.KHxj8b.tL9Q4c')[0];
+            break;
+        case 'Instagram':
+            inputEl = document.getElementsByClassName('Igw0E IwRSH eGOV_ _4EzTm L-sTb HcJZg')[0].getElementsByTagName('textarea')[0];
+            break;
+        case 'Tellonym':
+            inputEl = document.querySelectorAll('textarea[data-radium="true"]')[0];
+            break;
     }
 
     if (typeof(inputEl) !== 'undefined' && inputEl !== null) { // Se esiste il campo di input
         let buttonEl;
         try {
-            if (window.location.href.includes('https://web.whatsapp.com')) { // Se siamo su Whatsapp Web
-                inputEl.innerHTML = msg; // Inserisco il messaggio nel campo di input
-                // Simulo il bubbling sul campo di input
-                inputEl.dispatchEvent(new Event('input', {
-                    bubbles: true
-                }));
-                buttonEl = document.querySelectorAll('._3qpzV button._2Ujuu')[0]; // Pulsante per inviare il messaggio
-                buttonEl.click(); // Clicco il pulsante per inviare il messaggio
-            } else if (window.location.href.includes('https://web.telegram.org')) { // Se siamo su Telegram Web
-                inputEl.innerHTML = msg; // Inserisco il messaggio nel campo di input
-                buttonEl = document.getElementsByClassName("im_submit")[0];
-                buttonEl.dispatchEvent(new Event('mousedown'));
-            } else if (window.location.href.includes('https://meet.google.com')) { // Se siamo su Meet
-                inputEl.value = msg; // Inserisco il messaggio nel campo di input
-                // Simulo il bubbling sul campo di input
-                inputEl.dispatchEvent(new Event('input', {
-                    bubbles: true
-                }));
+            switch (piattaformaAttuale()) {
+                case 'Whatsapp':
+                    inputEl.innerHTML = msg; // Inserisco il messaggio nel campo di input
+                    // Simulo il bubbling sul campo di input
+                    inputEl.dispatchEvent(new Event('input', {
+                        bubbles: true
+                    }));
+                    buttonEl = document.querySelectorAll('._3qpzV button._2Ujuu')[0]; // Pulsante per inviare il messaggio
+                    buttonEl.click(); // Clicco il pulsante per inviare il messaggio
+                    break;
+                case 'Telegram':
+                    inputEl.innerHTML = msg; // Inserisco il messaggio nel campo di input
+                    buttonEl = document.getElementsByClassName("im_submit")[0];
+                    buttonEl.dispatchEvent(new Event('mousedown'));
+                    break;
+                case 'Teams':
+                    // Microsoft Teams usa React quindi per inserire il valore dentro il campo di input devo fare così
+                    injectScript('thespammer-invio-msg-microsoft-teams', `function createNewEvent(eventName, element) {
+                        let event;
+                        if (typeof(Event) === 'function') {
+                            event = new Event(eventName, {
+                                target: element,
+                                bubbles: true
+                            });
+                        } else {
+                            event = document.createEvent('Event');
+                            event.initEvent(eventName, true, true);
+                            element.addEventListener(eventName, function(e) {
+                                e.target = element;
+                            });
+                        }
 
-                buttonEl = document.getElementsByClassName('BC4V9b')[0].getElementsByTagName('span')[0]; // Pulsante per inviare il messaggio
-                buttonEl.click();
-            } else if (window.location.href.includes('messenger.com')) { // Se siamo su Messenger
-                // Simulo l'inserimento del testo da tastiera
-                document.getElementsByClassName('rq0escxv datstx6m k4urcfbm a8c37x1j')[0].querySelectorAll('[data-text=true]')[0].dispatchEvent(new InputEvent('textInput', { data: msg, bubbles: true }));
-                buttonEl = document.querySelectorAll('[aria-label="Premi Invio per inviare"]')[0]; // Pulsante per inviare il messaggio
-                buttonEl.click(); // Clicco il pulsante per inviare il messaggio
-            } else if (window.location.href.includes('instagram.com/direct/')) {
-                inputEl.value = msg; // Inserisco il messaggio nel campo di input
-                inputEl.dispatchEvent(new Event('input', {
-                    bubbles: true
-                }));
-                buttonEl = document.getElementsByClassName('Igw0E IwRSH eGOV_ _4EzTm L-sTb HcJZg')[0].getElementsByClassName('sqdOP yWX7d y3zKF')[0];
-                buttonEl.click();
-            } else if (window.location.href.includes('tellonym.me/')) {
-                // Tellonym usa React quindi per inserire il valore dentro il campo di input devo fare così
-                const code = `function createNewEvent(eventName, element) {
-                    let event;
-                    if (typeof(Event) === 'function') {
-                        event = new Event(eventName, {
-                            target: element,
-                            bubbles: true
-                        });
-                    } else {
-                        event = document.createEvent('Event');
-                        event.initEvent(eventName, true, true);
-                        element.addEventListener(eventName, function(e) {
-                            e.target = element;
-                        });
+                        return event;
+                    };
+
+                    function setReactValue(element, value) {
+                        let lastValue = element.innerHTML;
+                        element.innerHTML = value;
+
+                        let event = createNewEvent('input', element);
+                        event.simulated = true;
+
+                        let tracker = element._valueTracker;
+                        if (tracker) {
+                            tracker.setValue(lastValue);
+                            element.dispatchEvent(event);
+                        }
+
+                        return lastValue;
                     }
 
-                    return event;
-                };
+                    setReactValue(document.getElementsByClassName('cke_wysiwyg_div cke_reset cke_enable_context_menu cke_editable cke_editable_themed cke_contents_ltr cke_show_borders')[0], \`${msg}\`);
 
-                function setReactValue(element, value) {
-                    let lastValue = element.value;
-                    element.value = value;
+                    document.getElementById('send-message-button').click();`);
+                    break;
+                case 'Messenger':
+                    // Simulo l'inserimento del testo da tastiera
+                    document.getElementsByClassName('rq0escxv datstx6m k4urcfbm a8c37x1j')[0].querySelectorAll('[data-text=true]')[0].dispatchEvent(new InputEvent('textInput', { data: msg, bubbles: true }));
+                    buttonEl = document.querySelectorAll('[aria-label="Premi Invio per inviare"]')[0]; // Pulsante per inviare il messaggio
+                    buttonEl.click(); // Clicco il pulsante per inviare il messaggio
+                    break;
+                case 'Meet':
+                    inputEl.value = msg; // Inserisco il messaggio nel campo di input
+                    // Simulo il bubbling sul campo di input
+                    inputEl.dispatchEvent(new Event('input', {
+                        bubbles: true
+                    }));
 
-                    let event = createNewEvent('input', element);
-                    event.simulated = true;
-
-                    let tracker = element._valueTracker;
-                    if (tracker) {
-                        tracker.setValue(lastValue);
-                        element.dispatchEvent(event);
-                    }
-
-                    return lastValue;
-                }
-
-                setReactValue(document.querySelectorAll('textarea[data-radium=true]')[0], \`${msg}\`);
-
-                setTimeout(() => {
-                    buttonEl = document.querySelectorAll('button[type="submit"]')[0];
+                    buttonEl = document.getElementsByClassName('BC4V9b')[0].getElementsByTagName('span')[0]; // Pulsante per inviare il messaggio
                     buttonEl.click();
-                }, 300)`;
+                    break;
+                case 'Instagram':
+                    inputEl.value = msg; // Inserisco il messaggio nel campo di input
+                    inputEl.dispatchEvent(new Event('input', {
+                        bubbles: true
+                    }));
+                    buttonEl = document.getElementsByClassName('Igw0E IwRSH eGOV_ _4EzTm L-sTb HcJZg')[0].getElementsByClassName('sqdOP yWX7d y3zKF')[0];
+                    buttonEl.click();
+                    break;
+                case 'Tellonym':
+                    // Tellonym usa React quindi per inserire il valore dentro il campo di input devo fare così
+                    injectScript('thespammer-invio-msg-tellonym', `function createNewEvent(eventName, element) {
+                        let event;
+                        if (typeof(Event) === 'function') {
+                            event = new Event(eventName, {
+                                target: element,
+                                bubbles: true
+                            });
+                        } else {
+                            event = document.createEvent('Event');
+                            event.initEvent(eventName, true, true);
+                            element.addEventListener(eventName, function(e) {
+                                e.target = element;
+                            });
+                        }
 
-                const scriptId = 'thespammer-invio-msg-tellonym';
+                        return event;
+                    };
 
-                try {
-                    document.getElementById(scriptId).remove();
-                } catch (e) {
-                    console.error(e);
-                }
+                    function setReactValue(element, value) {
+                        let lastValue = element.value;
+                        element.value = value;
 
-                let scriptTag = document.createElement('script');
+                        let event = createNewEvent('input', element);
+                        event.simulated = true;
 
-                scriptTag.id = scriptId;
-                scriptTag.innerHTML = code;
-                document.head.appendChild(scriptTag);
+                        let tracker = element._valueTracker;
+                        if (tracker) {
+                            tracker.setValue(lastValue);
+                            element.dispatchEvent(event);
+                        }
+
+                        return lastValue;
+                    }
+
+                    setReactValue(document.querySelectorAll('textarea[data-radium=true]')[0], \`${msg}\`);
+
+                    setTimeout(() => {
+                        buttonEl = document.querySelectorAll('button[type="submit"]')[0];
+                        buttonEl.click();
+                    }, 300);`);
+                    break;
             }
         } catch (err) {
             console.error('Impossibile inviare il messaggio!');
@@ -968,8 +1115,11 @@ const dialogBot = async() => {
         case 'Telegram':
             nomeContattoProgrammato = `<p><br>Nome contatto<br><br></p>` + nomeContattoProgrammato;
             break;
+        case 'Teams':
+            nomeContattoProgrammato = `<p><br>Nome chat<br><br></p>` + nomeContattoProgrammato;
+            break;
         case 'Messenger':
-            nomeContattoProgrammato = `<p><br>URL profilo Facebook<br>Oppure<br>URL Chat Messenger<br><br></p>` + nomeContattoProgrammato;
+            nomeContattoProgrammato = `<p><br>URL profilo Facebook/Chat Messenger<br><br></p>` + nomeContattoProgrammato;
             break;
         case 'Meet':
             nomeContattoProgrammato = `<input id="spammerNameProgrammato" type="hidden" value="" />`;
