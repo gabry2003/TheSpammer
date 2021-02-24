@@ -71,7 +71,6 @@
         "*://*.zoom.us/*",
         "*://cdn.jsdelivr.net/*",
         "*://code.jquery.com/*",
-        "*://cdn.jsdelivr.net/*",
         "*://stackpath.bootstrapcdn.com/*",
         "*://cdnjs.cloudflare.com/*"
     ]
