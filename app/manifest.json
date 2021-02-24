@@ -3,7 +3,7 @@
     "short_name": "__MSG_appShortName__",
     "description": "__MSG_appDescription__",
     "homepage_url": "https://github.com/gabry2003/TheSpammer",
-    "version": "2.2",
+    "version": "2.2.1",
     "manifest_version": 2,
     "default_locale": "it",
     "icons": {
