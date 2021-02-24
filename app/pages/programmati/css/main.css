@@ -569,3 +569,7 @@ td {
 .td-error[contenteditable] {
     outline: 0px solid transparent !important;
 }
+
+.table100.ver3 td {
+    word-break: break-word !important;
+}

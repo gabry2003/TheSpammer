@@ -28,6 +28,215 @@ if (chrome) {
     bbrowser = browser;
 }
 
+
+const setSweetTheme = async() => {
+    let temaScuro; // Se e' attivo o no il tema scuro
+    let coloreSelect = '#78cbf2'; // Colore dei select
+
+    try {
+        temaScuro = (await getStorageData('temaScuro')).temaScuro;
+    } catch (e) {
+        console.error(e);
+        temaScuro = true;
+    }
+
+    try {
+        document.getElementById('thespammer-alert').remove();
+    } catch (e) {
+        console.error(e);
+    }
+
+    let styleElem = document.head.appendChild(document.createElement('style'));
+    styleElem.id = 'thespammer-alert'
+    styleElem.innerHTML = `@import url('https://fonts.googleapis.com/css?family=Poppins');`;
+    if (temaScuro) {
+        styleElem.innerHTML += `.swal-modal, .swal-icon--success:before, .swal-icon--success:after, .swal-icon--success:before, .swal-icon--success__hide-corners,
+        .swal-icon--error:before, .swal-icon--error:after, .swal-icon--error:before, .swal-icon--error__hide-corners,
+        .swal-icon--warning:before, .swal-icon--warning:after, .swal-icon--warning:before, .swal-icon--warning__hide-corners {
+            background-color: #000000;
+        }
+        .swal-content p, .swal-title, .swal-text {
+            color: #fff;
+        }`;
+
+        coloreSelect = '#c0392b';
+    }
+    styleElem.innerHTML += `
+.swal-overlay:before {
+    height: 0% !important;
+}
+.swal-content *, .swal-title, .swal-text {
+    font-family: "Poppins" !important;
+}
+
+.swal-content select {
+    width: 100%;
+    height: 50px;
+    font-size: 100%;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 0;
+    background-color: ${coloreSelect};
+    border: none;
+    border-bottom: 2px solid ${coloreSelect};
+    color: white;
+    padding: 10px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding: 10px;
+}
+
+/* For IE <= 11 */
+.swal-content select::-ms-expand {
+    display: none; 
+}
+
+.swal-content ul {
+    list-style-type: none;
+}
+
+.swal-content li {
+    display: inline-block;
+}
+
+.swal-content input[type="checkbox"][id^="cb"] {
+    display: none;
+}
+
+.swal-content label#img-label {
+    border: 1px solid #fff;
+    padding: 10px;
+    display: block;
+    position: relative;
+    margin: 10px;
+    cursor: pointer;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.swal-content label#img-label::before {
+    background-color: white;
+    color: white;
+    content: " ";
+    display: block;
+    border-radius: 50%;
+    border: 1px solid grey;
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    width: 25px;
+    height: 25px;
+    text-align: center;
+    line-height: 28px;
+    transition-duration: 0.4s;
+    transform: scale(0);
+}
+
+.swal-content label#img-label img {
+    height: 100px;
+    width: 100px;
+    transition-duration: 0.2s;
+    transform-origin: 50% 50%;
+}
+
+.swal-content :checked+label#img-label {
+    border-color: #ddd;
+}
+
+.swal-content :checked+label#img-label::before {
+    content: "✓";
+    background-color: #c0392b;
+    transform: scale(1);
+}
+
+.swal-content :checked+label#img-label img {
+    transform: scale(0.9);
+    box-shadow: 0 0 5px #333;
+    z-index: -1;
+}
+
+$focusColor:#EF9F00;
+.box-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+
+  .box {
+    margin-bottom: 30px;
+    display: inline-block;
+    position: relative;
+    input {
+      padding: 5px 10px;
+      height: 45px;
+      font-size: 1em;
+      line-height: 45px;
+      border: 2px solid #ccc;
+      width: 400px;
+      outline: none;
+      background: #fff; 
+      color: #a2a5a7;
+      &:focus {                 
+        + span {      
+          width: 100%;
+          opacity: 1;
+          transform:translateX(0);
+          &:before {
+            top: 0;
+            left: 0;
+            width: 100%;
+          }
+          &:after {
+            bottom: 0;
+            left: 0;
+            width: 100%;
+          }
+        }
+      }
+      + span {
+          display: inline-block;
+          position: absolute;
+          left: 0;
+          top: 0;        
+          border-left: 2px solid $focusColor;
+          border-right: 2px solid $focusColor;
+          width: calc(100% + 100px);
+          transform:translateX(-50px);
+          height: 100%;
+          pointer-events: none;
+          opacity: 0;
+          transition-property:opacity, width;
+          transition: .3s ease-out;
+          
+          &:before,&:after{
+            content: "";
+            display: inline-block;
+            position: absolute;   
+            left: 25px;
+             transition-property:top, bottom;
+            transition: .3s ease-out;
+            height: 2px;
+            width: calc(100% - 50px);
+            background: $focusColor;
+          }
+          &:before {           
+            top: -30px;                        
+          }
+          &:after {
+            bottom: -30px;
+          }
+        }
+    }
+  }
+}
+`;
+};
 /**
  * Funzione per inviare una notifica toast con sweetalert
  * 
@@ -37,21 +246,23 @@ if (chrome) {
  * @param {string} titolo titolo della notifica
  * @param {string} [tipo='success'] tipo della notifica (di default success)
  */
-const notifica = (titolo, tipo = 'success') => {
+const notifica = (titolo, tipo = 'success', text = null, timer = 1000) => {
     swal({
         toast: true,
         position: 'top-end',
         showConfirmButton: false,
-        timer: 1000,
+        timer: timer,
         timerProgressBar: true,
         onOpen: (toast) => {
             toast.addEventListener('mouseenter', Swal.stopTimer)
             toast.addEventListener('mouseleave', Swal.resumeTimer)
         },
         icon: tipo,
-        title: titolo
+        title: titolo,
+        text: text
     });
-    return 0;
+
+    setSweetTheme();
 }
 
 const getStorageData = key =>
@@ -161,7 +372,7 @@ const visualizzaStickers = async(time = 3000) => {
     try {
         let el = document.getElementsByClassName('_1O6cA')[0].getElementsByClassName('_3Xjbn')[2].querySelectorAll('[tabindex="-1"]')[2].getElementsByTagName('img');
         if (el == null || typeof el == undefined) {
-            throw Exception('Sticker non aperti!');
+            throw new Error('Sticker non aperti!');
         }
 
         return stickerAttuali;
@@ -213,7 +424,32 @@ const sendStickerBot = async(index) => {
     }
 };
 
-const entraInChat = async(nomeChat) => {
+const disableMsgProgrammati = async(msgEl) => {
+    let msgProgrammati;
+    try {
+        msgProgrammati = (await getStorageData('msgProgrammati')).msgProgrammati;
+
+        if (msgProgrammati == undefined) throw new Error();
+    } catch (e) {
+        msgProgrammati = [];
+    }
+
+    try {
+        msgProgrammati.filter(
+            (el) => {
+                return el.nome == msgEl.nome && el.orario == msgEl.orario
+            }
+        )[0].enabled = false;
+
+        bbrowser.storage.local.set({
+            msgProgrammati: msgProgrammati
+        });
+    } catch (e) {
+        console.error(e);
+    }
+};
+
+const entraInChat = async(nomeChat, msgEl = null) => {
     spammerLog(`Entro nella chat: ${nomeChat}`);
 
     try {
@@ -239,7 +475,7 @@ const entraInChat = async(nomeChat) => {
             for (let i = 0; i < listaContatti.length; i++) {
                 try {
                     let tmp = listaContatti[i].getElementsByClassName('_3dHYI')[0];
-                    if (tmp == null || typeof tmp == undefined) throw Exception('Contatto trovato!');
+                    if (tmp == null || typeof tmp == undefined) throw new Error('Contatto trovato!');
                 } catch (e) {
                     let el = listaContatti[i].getElementsByClassName('_1hI5g _1XH7x _1VzZY')[0];
                     triggerMouseEvent = (node, eventType) => {
@@ -267,7 +503,48 @@ const entraInChat = async(nomeChat) => {
 
             document.getElementsByClassName('im_dialogs_col')[0].getElementsByClassName('nav nav-pills nav-stacked')[0].getElementsByTagName('li')[0].getElementsByTagName('a')[0].dispatchEvent(new MouseEvent('mousedown'));
         } else if (window.location.href.includes('messenger.com')) { // Se siamo su Messenger
-            return false; // per il momento non disponibile
+            const idChatAttuale = window.location.href.split('messenger.com/t/')[1];
+            let idChat;
+
+            try {
+                const split = nomeChat.split('id=');
+                console.log(split);
+
+                idChat = split[1];
+
+                if (idChat == undefined) throw new Error('Id della chat da profilo facebook non trovato!');
+            } catch (e) {
+                console.error(e);
+
+                try {
+                    const split = nomeChat.split('messenger.com/t/');
+                    console.log(split);
+
+                    idChat = split[1];
+
+                    if (idChat == undefined) throw new Error('Id della chat da messenger non trovato!');
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+
+            if (idChat == null || idChat == undefined) {
+                notifica(null, 'error', 'Impossibile inviare il messaggio programmato! Puoi modificarlo dalla pagina di gestione dei messaggi programmati', null);
+
+                disableMsgProgrammati(msgEl);
+
+                throw new Error('Impossibile trovare la chat!');
+            }
+
+            if (idChatAttuale == idChat) {
+                spammerLog('Sono già nella chat!');
+
+                return true;
+            } else {
+                window.location.href = `https://www.messenger.com/t/${idChat}`;
+
+                return false;
+            }
         } else if (window.location.href.includes('https://meet.google.com')) {
             document.getElementsByClassName('DPvwYc sm8sCf KdraA')[0].click();
             await (async() => {
@@ -310,14 +587,14 @@ const entraInChat = async(nomeChat) => {
     let chatInstagramDaAprire;
     try {
         aperturaChatInstagram = (await getStorageData('aperturaChatInstagram')).aperturaChatInstagram;
-        if (typeof aperturaChatInstagram == undefined) throw Exception();
+        if (aperturaChatInstagram == undefined) throw new Error();
     } catch (e) {
         aperturaChatInstagram = false;
     }
 
     chatInstagramDaAprire = (await getStorageData('chatInstagramDaAprire')).chatInstagramDaAprire;
 
-    if (typeof chatInstagramDaAprire !== undefined && chatInstagramDaAprire != null && aperturaChatInstagram) {
+    if (chatInstagramDaAprire !== undefined && chatInstagramDaAprire != null && aperturaChatInstagram) {
         const url = `https://www.instagram.com/${chatInstagramDaAprire}/`;
 
         if (window.location.href !== url) window.location.href = url;
@@ -371,11 +648,11 @@ const sendMsgBot = (msg) => {
                 }));
                 buttonEl = document.querySelectorAll('._3qpzV button._2Ujuu')[0]; // Pulsante per inviare il messaggio
                 buttonEl.click(); // Clicco il pulsante per inviare il messaggio
-            } else if (window.location.href.includes("https://web.telegram.org")) { // Se siamo su Telegram Web
+            } else if (window.location.href.includes('https://web.telegram.org')) { // Se siamo su Telegram Web
                 inputEl.innerHTML = msg; // Inserisco il messaggio nel campo di input
                 buttonEl = document.getElementsByClassName("im_submit")[0];
-                buttonEl.dispatchEvent(new Event("mousedown"));
-            } else if (window.location.href.includes("https://meet.google.com")) { // Se siamo su Meet
+                buttonEl.dispatchEvent(new Event('mousedown'));
+            } else if (window.location.href.includes('https://meet.google.com')) { // Se siamo su Meet
                 inputEl.value = msg; // Inserisco il messaggio nel campo di input
                 // Simulo il bubbling sul campo di input
                 inputEl.dispatchEvent(new Event('input', {
@@ -384,7 +661,7 @@ const sendMsgBot = (msg) => {
 
                 buttonEl = document.getElementsByClassName('BC4V9b')[0].getElementsByTagName('span')[0]; // Pulsante per inviare il messaggio
                 buttonEl.click();
-            } else if (window.location.href.includes("messenger.com")) { // Se siamo su Messenger
+            } else if (window.location.href.includes('messenger.com')) { // Se siamo su Messenger
                 // Simulo l'inserimento del testo da tastiera
                 document.getElementsByClassName('rq0escxv datstx6m k4urcfbm a8c37x1j')[0].querySelectorAll('[data-text=true]')[0].dispatchEvent(new InputEvent('textInput', { data: msg, bubbles: true }));
                 buttonEl = document.querySelectorAll('[aria-label="Premi Invio per inviare"]')[0]; // Pulsante per inviare il messaggio
@@ -397,22 +674,61 @@ const sendMsgBot = (msg) => {
                 buttonEl = document.getElementsByClassName('Igw0E IwRSH eGOV_ _4EzTm L-sTb HcJZg')[0].getElementsByClassName('sqdOP yWX7d y3zKF')[0];
                 buttonEl.click();
             } else if (window.location.href.includes('tellonym.me/')) {
-                triggerMouseEvent = (node, eventType) => {
-                    let clickEvent = document.createEvent('MouseEvents');
-                    clickEvent.initEvent(eventType, true, true);
-                    node.dispatchEvent(clickEvent);
+                // Tellonym usa React quindi per inserire il valore dentro il campo di input devo fare così
+                const code = `function createNewEvent(eventName, element) {
+                    let event;
+                    if (typeof(Event) === 'function') {
+                        event = new Event(eventName, {
+                            target: element,
+                            bubbles: true
+                        });
+                    } else {
+                        event = document.createEvent('Event');
+                        event.initEvent(eventName, true, true);
+                        element.addEventListener(eventName, function(e) {
+                            e.target = element;
+                        });
+                    }
+
+                    return event;
+                };
+
+                function setReactValue(element, value) {
+                    let lastValue = element.value;
+                    element.value = value;
+
+                    let event = createNewEvent('input', element);
+                    event.simulated = true;
+
+                    let tracker = element._valueTracker;
+                    if (tracker) {
+                        tracker.setValue(lastValue);
+                        element.dispatchEvent(event);
+                    }
+
+                    return lastValue;
                 }
-                triggerMouseEvent(inputEl, 'mouseover');
-                triggerMouseEvent(inputEl, 'mousedown');
-                triggerMouseEvent(inputEl, 'mouseup');
-                triggerMouseEvent(inputEl, 'click');
-                inputEl.innerHTML = msg;
-                inputEl.value = msg;
-                inputEl.dispatchEvent(new Event('focus'));
-                inputEl.dispatchEvent(new Event('input'));
-                inputEl.dispatchEvent(new Event('change'));
-                buttonEl = document.getElementsByClassName('css-76zvg2 css-bfa6kz')[1];
-                buttonEl.click();
+
+                setReactValue(document.querySelectorAll('textarea[data-radium=true]')[0], \`${msg}\`);
+
+                setTimeout(() => {
+                    buttonEl = document.querySelectorAll('button[type="submit"]')[0];
+                    buttonEl.click();
+                }, 300)`;
+
+                const scriptId = 'thespammer-invio-msg-tellonym';
+
+                try {
+                    document.getElementById(scriptId).remove();
+                } catch (e) {
+                    console.error(e);
+                }
+
+                let scriptTag = document.createElement('script');
+
+                scriptTag.id = scriptId;
+                scriptTag.innerHTML = code;
+                document.head.appendChild(scriptTag);
             }
         } catch (err) {
             console.error('Impossibile inviare il messaggio!');
@@ -585,16 +901,16 @@ const botProgrammati = async() => {
             try {
                 msgProgrammati = (await getStorageData('msgProgrammati')).msgProgrammati;
 
-                if (msgProgrammati == undefined) throw Exception();
+                if (msgProgrammati == undefined) throw new Error();
             } catch (e) {
                 msgProgrammati = [];
             }
 
             for (let i = 0; i < msgProgrammati.length; i++) {
-                if (Date.now() >= Date.parse(msgProgrammati[i].orario) && msgProgrammati[i].piattaforma == piattaformaAttuale()) { // Se devo inviare il messaggio
+                if (Date.now() >= Date.parse(msgProgrammati[i].orario) && msgProgrammati[i].piattaforma == piattaformaAttuale() && msgProgrammati[i].enabled) { // Se devo inviare il messaggio
                     stopBot();
                     programmatoStart = true;
-                    const res = await entraInChat(msgProgrammati[i].nome);
+                    const res = await entraInChat(msgProgrammati[i].nome, msgProgrammati[i]);
                     if (res) {
                         sendMsgBot(msgProgrammati[i].msg);
                         msgProgrammati.splice(i, 1);
@@ -621,7 +937,6 @@ let theSpammerProgrammati = setInterval(async() => {
  */
 const dialogBot = async() => {
     let temaScuro; // Se e' attivo o no il tema scuro
-    let coloreSelect = '#78cbf2'; // Colore dei select
     let tabClass; // Classe dei tab
 
     try {
@@ -637,6 +952,39 @@ const dialogBot = async() => {
         tabClass = 'skin-alizarin';
     } else {
         tabClass = 'skin-peter-river';
+    }
+
+    let nomeContattoProgrammato = `<div class="box-container">
+    <div class="box">
+        <input id="spammerNameProgrammato" type="text" />
+        <span></span>
+    </div>
+</div>
+<label for="spammerNameProgrammato"></label>`;
+    let stickersAbilitati = false;
+
+    switch (piattaformaAttuale()) {
+        case 'Whatsapp':
+        case 'Telegram':
+            nomeContattoProgrammato = `<p><br>Nome contatto<br><br></p>` + nomeContattoProgrammato;
+            break;
+        case 'Messenger':
+            nomeContattoProgrammato = `<p><br>URL profilo Facebook<br>Oppure<br>URL Chat Messenger<br><br></p>` + nomeContattoProgrammato;
+            break;
+        case 'Meet':
+            nomeContattoProgrammato = `<input id="spammerNameProgrammato" type="hidden" value="" />`;
+            break;
+        case 'Instagram':
+        case 'Tellonym':
+            nomeContattoProgrammato = `<p><br>Username profilo<br><br></p>` + nomeContattoProgrammato;
+            break;
+    }
+
+
+    switch (piattaformaAttuale()) {
+        case 'Whatsapp':
+            stickersAbilitati = true;
+            break;
     }
 
     span.innerHTML = `
@@ -655,14 +1003,7 @@ const dialogBot = async() => {
         </div>
     </div>
     <label for="spammerTextProgrammato"></label>
-    <p><br>Nome contatto<br><br></p>
-    <div class="box-container">
-        <div class="box">
-            <input id="spammerNameProgrammato" type="text" />
-            <span></span>
-        </div>
-    </div>
-    <label for="spammerNameProgrammato"></label>
+    ${nomeContattoProgrammato}
     <p><br>Orario invio:<br><br></p>
     <div class="box-container">
         <div class="box">
@@ -676,7 +1017,7 @@ const dialogBot = async() => {
     <p>Tipo invio<br><br></p>
     <select id="tipoInvio">
         <option value="0" selected>Messaggi testuali</option>
-        <option value="1">Stickers</option>
+        ` + (stickersAbilitati ? `<option value="1">Stickers</option>` : ``) + `
     </select>
     <p><br>Modalità invio<br><br></p>
     <select id="spammerMod">
@@ -762,7 +1103,7 @@ const dialogBot = async() => {
                     let msgProgrammati;
                     try {
                         msgProgrammati = (await getStorageData('msgProgrammati')).msgProgrammati;
-                        if (typeof msgProgrammati == undefined) throw new Exception();
+                        if (typeof msgProgrammati == undefined) throw new Error();
                     } catch (e) {
                         msgProgrammati = [];
                         console.error(e);
@@ -772,7 +1113,8 @@ const dialogBot = async() => {
                         nome: spammerNameProgrammato,
                         msg: spammerTextProgrammato,
                         orario: spammerOrarioProgrammato,
-                        piattaforma: piattaformaAttuale()
+                        piattaforma: piattaformaAttuale(),
+                        enabled: true
                     });
 
                     bbrowser.storage.local.set({
@@ -874,202 +1216,7 @@ const dialogBot = async() => {
         spammerLog('Operazione annullata!');
     });
 
-    try {
-        document.getElementById('thespammer-alert').remove();
-    } catch (e) {
-        console.error(e);
-    }
-
-    let styleElem = document.head.appendChild(document.createElement('style'));
-    styleElem.id = 'thespammer-alert'
-    styleElem.innerHTML = `@import url('https://fonts.googleapis.com/css?family=Poppins');`;
-    if (temaScuro) {
-        styleElem.innerHTML += `.swal-modal, .swal-icon--success:before, .swal-icon--success:after, .swal-icon--success:before, .swal-icon--success__hide-corners,
-        .swal-icon--error:before, .swal-icon--error:after, .swal-icon--error:before, .swal-icon--error__hide-corners,
-        .swal-icon--warning:before, .swal-icon--warning:after, .swal-icon--warning:before, .swal-icon--warning__hide-corners {
-            background-color: #000000;
-        }
-        .swal-content p, .swal-title, .swal-text {
-            color: #fff;
-        }`;
-
-        coloreSelect = '#c0392b';
-    }
-    styleElem.innerHTML += `
-.swal-overlay:before {
-    height: 0% !important;
-}
-.swal-content *, .swal-title {
-    font-family: "Poppins" !important;
-}
-
-.swal-content select {
-    width: 100%;
-    height: 50px;
-    font-size: 100%;
-    font-weight: bold;
-    cursor: pointer;
-    border-radius: 0;
-    background-color: ${coloreSelect};
-    border: none;
-    border-bottom: 2px solid ${coloreSelect};
-    color: white;
-    padding: 10px;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    padding: 10px;
-}
-
-/* For IE <= 11 */
-.swal-content select::-ms-expand {
-    display: none; 
-}
-
-.swal-content ul {
-    list-style-type: none;
-}
-
-.swal-content li {
-    display: inline-block;
-}
-
-.swal-content input[type="checkbox"][id^="cb"] {
-    display: none;
-}
-
-.swal-content label#img-label {
-    border: 1px solid #fff;
-    padding: 10px;
-    display: block;
-    position: relative;
-    margin: 10px;
-    cursor: pointer;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-
-.swal-content label#img-label::before {
-    background-color: white;
-    color: white;
-    content: " ";
-    display: block;
-    border-radius: 50%;
-    border: 1px solid grey;
-    position: absolute;
-    top: -5px;
-    left: -5px;
-    width: 25px;
-    height: 25px;
-    text-align: center;
-    line-height: 28px;
-    transition-duration: 0.4s;
-    transform: scale(0);
-}
-
-.swal-content label#img-label img {
-    height: 100px;
-    width: 100px;
-    transition-duration: 0.2s;
-    transform-origin: 50% 50%;
-}
-
-.swal-content :checked+label#img-label {
-    border-color: #ddd;
-}
-
-.swal-content :checked+label#img-label::before {
-    content: "✓";
-    background-color: #c0392b;
-    transform: scale(1);
-}
-
-.swal-content :checked+label#img-label img {
-    transform: scale(0.9);
-    box-shadow: 0 0 5px #333;
-    z-index: -1;
-}
-
-$focusColor:#EF9F00;
-.box-container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-
-  .box {
-    margin-bottom: 30px;
-    display: inline-block;
-    position: relative;
-    input {
-      padding: 5px 10px;
-      height: 45px;
-      font-size: 1em;
-      line-height: 45px;
-      border: 2px solid #ccc;
-      width: 400px;
-      outline: none;
-      background: #fff; 
-      color: #a2a5a7;
-      &:focus {                 
-        + span {      
-          width: 100%;
-          opacity: 1;
-          transform:translateX(0);
-          &:before {
-            top: 0;
-            left: 0;
-            width: 100%;
-          }
-          &:after {
-            bottom: 0;
-            left: 0;
-            width: 100%;
-          }
-        }
-      }
-      + span {
-          display: inline-block;
-          position: absolute;
-          left: 0;
-          top: 0;        
-          border-left: 2px solid $focusColor;
-          border-right: 2px solid $focusColor;
-          width: calc(100% + 100px);
-          transform:translateX(-50px);
-          height: 100%;
-          pointer-events: none;
-          opacity: 0;
-          transition-property:opacity, width;
-          transition: .3s ease-out;
-          
-          &:before,&:after{
-            content: "";
-            display: inline-block;
-            position: absolute;   
-            left: 25px;
-             transition-property:top, bottom;
-            transition: .3s ease-out;
-            height: 2px;
-            width: calc(100% - 50px);
-            background: $focusColor;
-          }
-          &:before {           
-            top: -30px;                        
-          }
-          &:after {
-            bottom: -30px;
-          }
-        }
-    }
-  }
-}
-`;
+    setSweetTheme();
 
     document.getElementById('tipoInvio').addEventListener('change', async(event) => {
         switch (document.getElementById('tipoInvio').value) {

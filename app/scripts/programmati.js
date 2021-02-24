@@ -48,6 +48,7 @@ const elimina = async(el, index) => {
 };
 
 const modifica = async(index, key, value, el, origClass) => {
+    console.log(`msg[${index}][${key}] = ${value}`);
     let msgProgrammati;
     try {
         msgProgrammati = (await getStorageData('msgProgrammati')).msgProgrammati;
@@ -93,12 +94,29 @@ document.addEventListener('DOMContentLoaded', async() => {
                 const orarioOrig = msgProgrammati[i].orario;
                 const split = orarioOrig.split('T');
                 let orario = `${split[0]} alle ${split[1]}`;
+
+                const piattaforme = ['Whatsapp', 'Telegram', 'Messenger', 'Meet', 'Instagram', 'Tellonym'];
+
+                let selectPiattaforma = `<select id="piattaforma-${i}" class="form-select">`;
+
+                try {
+                    for (let j = 0; j < piattaforme.length; j++) {
+                        const selected = piattaforme[j] == msgProgrammati[i].piattaforma ? ` selected` : ``;
+                        selectPiattaforma += `<option value="${piattaforme[j]}"${selected}>${piattaforme[j]}</option>`;
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
+
+                selectPiattaforma += `</select>`;
+
                 document.getElementById('elenco-messaggi').innerHTML += `<tr class="row100 body">
     <td class="cell100 column1" contenteditable="true" id="msg-${i}">${msgProgrammati[i].msg}</td>
     <td class="cell100 column2" contenteditable="true" id="nome-${i}">${msgProgrammati[i].nome}</td>
     <td class="cell100 column3" contenteditable="true" id="orario-${i}">${orario}</td>
-    <td class="cell100 column4" id="orario-${i}">${msgProgrammati[i].piattaforma}</td>
-    <td class="cell100 column5">
+    <td class="cell100 column2" contenteditable="true">${selectPiattaforma}</td>
+    <td class="cell100 column2"><input type="checkbox" id="enabled-${i}" class="form-control" ${msgProgrammati[i].enabled ? "checked" : ""}></td>
+    <td class="cell100 column6">
         <button class="btn btn-danger" id="elimina-${i}">
             <i class="fa fa-trash"></i>
         </button>
@@ -123,6 +141,12 @@ document.addEventListener('DOMContentLoaded', async() => {
                             const split = this.innerText.split(' alle ');
                             await modifica(i, 'orario', `${split[0]}T${split[1]}`, this, 'cell100 column3');
                         }
+                    });
+                    document.getElementById(`piattaforma-${i}`).addEventListener('change', async function(e) {
+                        await modifica(i, 'piattaforma', this.value, this.parentElement, 'cell100 column2');
+                    });
+                    document.getElementById(`enabled-${i}`).addEventListener('click', async function(e) {
+                        await modifica(i, 'enabled', this.checked, this.parentElement, 'cell100 column2');
                     });
                     document.getElementById(`elimina-${i}`).addEventListener('click', async function() {
                         await elimina(this, parseInt(this.id.split('-')[1]));
