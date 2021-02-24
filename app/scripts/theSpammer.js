@@ -306,21 +306,26 @@ const spammerLog = (testo, colore = '#bada55', sfondo = '#222') => {
     console.log('%c ' + testo, 'background: ' + sfondo + '; color: ' + colore + '; font-weight: bold;');
 }
 
+// Ritorna la piattaforma attuale guardando l'url della pagina
 const piattaformaAttuale = (log = false) => {
-    if (window.location.href.includes('web.whatsapp.com')) { // Se siamo su Whatsapp Web
+    const url = window.location.href;
+
+    if (url.includes('web.whatsapp.com')) {
         res = 'Whatsapp';
-    } else if (window.location.href.includes('web.telegram.org')) { // Se siamo su Telegram Web
+    } else if (url.includes('web.telegram.org')) {
         res = 'Telegram';
-    } else if (window.location.href.includes('messenger.com')) { // Se siamo su Messenger
+    } else if (url.includes('messenger.com')) {
         res = 'Messenger';
-    } else if (window.location.href.includes('meet.google.com')) { // Se siamo su Meet
+    } else if (url.includes('meet.google.com')) {
         res = 'Meet';
-    } else if (window.location.href.includes('instagram.com/direct/')) {
+    } else if (url.includes('instagram.com/direct/')) {
         res = 'Instagram';
-    } else if (window.location.href.includes('tellonym.me/')) {
+    } else if (url.includes('tellonym.me/')) {
         res = 'Tellonym';
-    } else if (window.location.href.includes('teams.microsoft.com/')) {
+    } else if (url.includes('teams.microsoft.com/')) {
         res = 'Teams';
+    } else if (url.includes('zoom.us')) {
+        res = 'Zoom';
     }
 
     if (log) {
@@ -338,7 +343,8 @@ piattaformaAttuale(true);
 const getChatName = () => {
     let el;
     try {
-        switch (piattaformaAttuale()) {
+        const piattaforma = piattaformaAttuale();
+        switch (piattaforma) {
             case 'Whatsapp':
                 el = document.querySelectorAll('#main span._1hI5g._1XH7x._1VzZY')[0];
                 break;
@@ -352,7 +358,8 @@ const getChatName = () => {
                 el = document.getElementsByClassName('bafdgad4 tkr6xdv7')[0].getElementsByClassName('a8c37x1j ni8dbmo4 stjgntxs l9j0dhe7 ltmttdrg g0qnabr5')[0];
                 break;
             case 'Meet':
-                spammerLog('Su Meet non bisogna entrare in una chat!');
+            case 'Zoom':
+                spammerLog(`Su ${piattaforma} non ci sono chat!`);
                 return '';
             case 'Instagram':
                 el = document.getElementsByClassName('PjuAP')[0].getElementsByClassName('Igw0E IwRSH eGOV_ ybXk5 _4EzTm')[0];
@@ -382,7 +389,7 @@ const getChatName = () => {
 const checkChatName = (confronto = null) => {
     const piattaforma = piattaformaAttuale();
 
-    if (piattaforma == 'Meet') return true;
+    if (piattaforma == 'Meet' || piattaforma == 'Zoom') return true;
     let cond = getChatName() !== ''; // La condizione iniziale e' che sia dentro una chat
     if (confronto !== null) { // Se ha passato un valore da confrontare
 
@@ -626,6 +633,12 @@ const entraInChat = async(nomeChat, msgEl = null) => {
                     return new Promise(r => setTimeout(r, 300))
                 })();
                 break;
+            case 'Zoom':
+                document.querySelectorAll('[aria-label="open the chat pane"]')[0].click();
+                await (async() => {
+                    return new Promise(r => setTimeout(r, 300))
+                })();
+                break;
             case 'Instagram':
                 if (getChatName() == nomeChat) {
                     spammerLog('Sono già nella chat!');
@@ -743,6 +756,9 @@ const sendMsgBot = (msg) => {
         case 'Meet':
             inputEl = document.querySelectorAll('textarea.KHxj8b.tL9Q4c')[0];
             break;
+        case 'Zoom':
+            inputEl = document.querySelectorAll('textarea[class="chat-box__chat-textarea window-content-bottom"]')[0];
+            break;
         case 'Instagram':
             inputEl = document.getElementsByClassName('Igw0E IwRSH eGOV_ _4EzTm L-sTb HcJZg')[0].getElementsByTagName('textarea')[0];
             break;
@@ -825,6 +841,56 @@ const sendMsgBot = (msg) => {
                     buttonEl = document.getElementsByClassName('BC4V9b')[0].getElementsByTagName('span')[0]; // Pulsante per inviare il messaggio
                     buttonEl.click();
                     break;
+                case 'Zoom':
+                    // Zoom usa React quindi per inserire il valore dentro il campo di input devo fare così
+                    injectScript('thespammer-invio-msg-zoom', `
+                    inputEl = document.querySelectorAll('textarea[class="chat-box__chat-textarea window-content-bottom"]')[0];
+                    
+                    function createNewEvent(eventName, element) {
+                        let event;
+                        if (typeof(Event) === 'function') {
+                            event = new Event(eventName, {
+                                target: element,
+                                bubbles: true
+                            });
+                        } else {
+                            event = document.createEvent('Event');
+                            event.initEvent(eventName, true, true);
+                            element.addEventListener(eventName, function(e) {
+                                e.target = element;
+                            });
+                        }
+
+                        return event;
+                    }
+
+                    function setReactValue(element, value) {
+                        let lastValue = element.value;
+                        element.value = value;
+                        element.innerHTML = value;
+
+                        let event = createNewEvent('input', element);
+                        event.simulated = true;
+
+                        let tracker = element._valueTracker;
+                        if (tracker) {
+                            tracker.setValue(lastValue);
+                            element.dispatchEvent(event);
+                        }
+
+                        return lastValue;
+                    }
+
+                    setReactValue(inputEl, \`${msg}\`);
+
+                    setTimeout(() => {
+                        inputEl.dispatchEvent(new KeyboardEvent('keydown', {
+                            bubbles: true,
+                            cancelable: true,
+                            keyCode: 13
+                        }));
+                    }, 200);`);
+                    break;
                 case 'Instagram':
                     inputEl.value = msg; // Inserisco il messaggio nel campo di input
                     inputEl.dispatchEvent(new Event('input', {
@@ -851,7 +917,7 @@ const sendMsgBot = (msg) => {
                         }
 
                         return event;
-                    };
+                    }
 
                     function setReactValue(element, value) {
                         let lastValue = element.value;
@@ -906,9 +972,6 @@ const ohMyBot = () => {
                 console.log(`Nessuna azione per il tipo invio: ${tipoInvio}`);
                 break;
         }
-
-        spammerLog('len:');
-        spammerLog(len);
 
         if (modalita == 1) { // Se devo mandarlo in modo casuale
             msgIndex = Math.round(Math.random() * (len - 1)); // Genero un indice casuale come contatore
@@ -1122,6 +1185,7 @@ const dialogBot = async() => {
             nomeContattoProgrammato = `<p><br>URL profilo Facebook/Chat Messenger<br><br></p>` + nomeContattoProgrammato;
             break;
         case 'Meet':
+        case 'Zoom':
             nomeContattoProgrammato = `<input id="spammerNameProgrammato" type="hidden" value="" />`;
             break;
         case 'Instagram':
@@ -1243,7 +1307,10 @@ const dialogBot = async() => {
 
             if (spammerTextProgrammato != '') { // Se vuole programmare un messaggio
                 let cond = true;
-                if (!window.location.href.includes('https://meet.google.com')) {
+
+                const piattaforma = piattaformaAttuale();
+
+                if (piattaforma != 'Meet' && piattaforma != 'Zoom') {
                     cond = spammerTextProgrammato != '' && spammerNameProgrammato != '' && spammerOrarioProgrammato != '';
                 } else {
                     cond = spammerTextProgrammato != '' && spammerOrarioProgrammato != '';
@@ -1263,7 +1330,7 @@ const dialogBot = async() => {
                         nome: spammerNameProgrammato,
                         msg: spammerTextProgrammato,
                         orario: spammerOrarioProgrammato,
-                        piattaforma: piattaformaAttuale(),
+                        piattaforma: piattaforma,
                         enabled: true
                     });
 
@@ -1378,7 +1445,7 @@ const dialogBot = async() => {
                 document.getElementById('invio-sticker').style.display = 'block';
                 let sceltaStickers = `<ul>`;
 
-                if (window.location.href.includes('https://web.whatsapp.com')) { // Se siamo su Whatsapp Web
+                if (piattaformaAttuale() == 'Whatsapp') { // Se siamo su Whatsapp Web
                     document.getElementById('scelta-stickers').innerHTML = `<img src="https://lh3.googleusercontent.com/proxy/WDpRdT-QyoFux7dbLQ5fKN9MlwuH31PC6Eiq0zR_r1Eh9ZPpaPeCPBpvxDB2g82SABzADlWdfh59BrVVu7ufiOK_A4QQHQu7Ir8aI7PJGpXYyoRJHOPn5_GNYS06GYUgHuGEEF6cySebzSPPO7ec62OO9hLhHA" width=50 height=50 style="text-align:center;">`
                     let stick = await visualizzaStickers();
                     for (let i = 0; i < stick.length; i++) {

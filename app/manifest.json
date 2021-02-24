@@ -38,7 +38,8 @@
             "*://*.messenger.com/*",
             "*://*.instagram.com/*",
             "*://*.tellonym.me/*",
-            "*://teams.microsoft.com/*"
+            "*://teams.microsoft.com/*",
+            "*://*.zoom.us/*"
         ],
         "css": [
             "styles/sweetalert2.min.css",
@@ -67,6 +68,7 @@
         "*://*.messenger.com/*",
         "*://*.tellonym.me/*",
         "*://teams.microsoft.com/*",
+        "*://*.zoom.us/*",
         "*://cdn.jsdelivr.net/*",
         "*://code.jquery.com/*",
         "*://cdn.jsdelivr.net/*",
