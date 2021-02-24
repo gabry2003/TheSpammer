@@ -310,6 +310,8 @@ const spammerLog = (testo, colore = '#bada55', sfondo = '#222') => {
 const piattaformaAttuale = (log = false) => {
     const url = window.location.href;
 
+    let res;
+
     if (url.includes('web.whatsapp.com')) {
         res = 'Whatsapp';
     } else if (url.includes('web.telegram.org')) {
@@ -845,7 +847,7 @@ const sendMsgBot = (msg) => {
                     // Zoom usa React quindi per inserire il valore dentro il campo di input devo fare così
                     injectScript('thespammer-invio-msg-zoom', `
                     inputEl = document.querySelectorAll('textarea[class="chat-box__chat-textarea window-content-bottom"]')[0];
-                    
+
                     function createNewEvent(eventName, element) {
                         let event;
                         if (typeof(Event) === 'function') {
