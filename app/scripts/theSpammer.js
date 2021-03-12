@@ -348,7 +348,7 @@ const getChatName = () => {
         const piattaforma = piattaformaAttuale();
         switch (piattaforma) {
             case 'Whatsapp':
-                el = document.querySelectorAll('#main span._1hI5g._1XH7x._1VzZY')[0];
+                el = document.querySelectorAll('#main header div')[3];
                 break;
             case 'Telegram':
                 el = document.querySelectorAll('span.tg_head_peer_title')[0];
@@ -744,7 +744,7 @@ const sendMsgBot = (msg) => {
 
     switch (piattaformaAttuale()) {
         case 'Whatsapp':
-            inputEl = document.querySelectorAll('#main ._1awRl.copyable-text.selectable-text')[0];
+            inputEl = document.querySelectorAll('footer .selectable-text')[0];
             break;
         case 'Telegram':
             inputEl = document.querySelectorAll('.composer_rich_textarea')[0];
@@ -779,7 +779,7 @@ const sendMsgBot = (msg) => {
                     inputEl.dispatchEvent(new Event('input', {
                         bubbles: true
                     }));
-                    buttonEl = document.querySelectorAll('._3qpzV button._2Ujuu')[0]; // Pulsante per inviare il messaggio
+                    buttonEl = document.querySelectorAll('[data-icon="send"]')[0].parentElement; // Pulsante per inviare il messaggio
                     buttonEl.click(); // Clicco il pulsante per inviare il messaggio
                     break;
                 case 'Telegram':

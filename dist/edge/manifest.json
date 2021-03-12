@@ -1,7 +1,7 @@
 {
   "name": "__MSG_appName__",
   "description": "__MSG_appDescription__",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "short_name": "__MSG_appShortName__",
   "homepage_url": "https://github.com/gabry2003/TheSpammer",
   "manifest_version": 2,

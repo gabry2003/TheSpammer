@@ -1,6 +1,6 @@
 {
     "name": "thespammer",
-    "version": "2.1.0",
+    "version": "2.1.2",
     "description": "Spamma messaggi su Whatsapp Web, Telegram Web e Google Meet",
     "scripts": {
         "dev": "webextension-toolbox dev",
