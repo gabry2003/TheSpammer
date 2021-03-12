@@ -9,7 +9,7 @@ Ancora non disponibile nello store
 ### Opera
 Ancora non disponibile nello store
 ## Installazione da sorgente
-Vai nella pagina di [rilascio](https://github.com/gabry2003/TheSpammer/releases/tag/2.0), prendi il file.zip col sorgente per il tuo browser ed estrailo in una cartella ricordandoti però dove!
+Vai nella pagina di [rilascio](https://github.com/gabry2003/TheSpammer/releases/tag/v2.2.2), prendi il file.zip col sorgente per il tuo browser ed estrailo in una cartella ricordandoti però dove!
 ### Chrome
 - Vai su *__chrome://extension__*
 - In alto a destra abilita la *__modalitù sviluppatore__*
